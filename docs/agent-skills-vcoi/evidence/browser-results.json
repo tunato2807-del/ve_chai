@@ -1,0 +1,208 @@
+{
+  "environment": {
+    "base": "http://127.0.0.1:41861",
+    "browser": "154.0.8037.57",
+    "backend": "real Spring Boot / temporary H2 MSSQLServer mode",
+    "frontend": "Vite production preview"
+  },
+  "pages": [
+    {
+      "route": "/",
+      "width": 320,
+      "theme": "light",
+      "title": "VCoi | Thu gom hôm nay, xanh hơn ngày mai",
+      "headings": 1,
+      "overflow": false,
+      "errors": [],
+      "serverErrors": [],
+      "axeViolations": []
+    },
+    {
+      "route": "/bang-gia",
+      "width": 320,
+      "theme": "light",
+      "title": "Bảng giá thu mua | VCoi",
+      "headings": 1,
+      "overflow": false,
+      "errors": [],
+      "serverErrors": [],
+      "axeViolations": []
+    },
+    {
+      "route": "/dang-nhap",
+      "width": 320,
+      "theme": "light",
+      "title": "Đăng nhập | VCoi",
+      "headings": 1,
+      "overflow": false,
+      "errors": [],
+      "serverErrors": [],
+      "axeViolations": []
+    },
+    {
+      "route": "/dang-ky",
+      "width": 320,
+      "theme": "light",
+      "title": "Đăng ký khách hàng | VCoi",
+      "headings": 1,
+      "overflow": false,
+      "errors": [],
+      "serverErrors": [],
+      "axeViolations": []
+    },
+    {
+      "route": "/",
+      "width": 320,
+      "theme": "dark",
+      "title": "VCoi | Thu gom hôm nay, xanh hơn ngày mai",
+      "headings": 1,
+      "overflow": false,
+      "errors": [],
+      "serverErrors": [],
+      "axeViolations": []
+    },
+    {
+      "route": "/bang-gia",
+      "width": 320,
+      "theme": "dark",
+      "title": "Bảng giá thu mua | VCoi",
+      "headings": 1,
+      "overflow": false,
+      "errors": [],
+      "serverErrors": [],
+      "axeViolations": []
+    },
+    {
+      "route": "/dang-nhap",
+      "width": 320,
+      "theme": "dark",
+      "title": "Đăng nhập | VCoi",
+      "headings": 1,
+      "overflow": false,
+      "errors": [],
+      "serverErrors": [],
+      "axeViolations": []
+    },
+    {
+      "route": "/dang-ky",
+      "width": 320,
+      "theme": "dark",
+      "title": "Đăng ký khách hàng | VCoi",
+      "headings": 1,
+      "overflow": false,
+      "errors": [],
+      "serverErrors": [],
+      "axeViolations": []
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "theme": "light",
+      "title": "VCoi | Thu gom hôm nay, xanh hơn ngày mai",
+      "headings": 1,
+      "overflow": false,
+      "errors": [],
+      "serverErrors": [],
+      "axeViolations": []
+    },
+    {
+      "route": "/bang-gia",
+      "width": 1440,
+      "theme": "light",
+      "title": "Bảng giá thu mua | VCoi",
+      "headings": 1,
+      "overflow": false,
+      "errors": [],
+      "serverErrors": [],
+      "axeViolations": []
+    },
+    {
+      "route": "/dang-nhap",
+      "width": 1440,
+      "theme": "light",
+      "title": "Đăng nhập | VCoi",
+      "headings": 1,
+      "overflow": false,
+      "errors": [],
+      "serverErrors": [],
+      "axeViolations": []
+    },
+    {
+      "route": "/dang-ky",
+      "width": 1440,
+      "theme": "light",
+      "title": "Đăng ký khách hàng | VCoi",
+      "headings": 1,
+      "overflow": false,
+      "errors": [],
+      "serverErrors": [],
+      "axeViolations": []
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "theme": "dark",
+      "title": "VCoi | Thu gom hôm nay, xanh hơn ngày mai",
+      "headings": 1,
+      "overflow": false,
+      "errors": [],
+      "serverErrors": [],
+      "axeViolations": []
+    },
+    {
+      "route": "/bang-gia",
+      "width": 1440,
+      "theme": "dark",
+      "title": "Bảng giá thu mua | VCoi",
+      "headings": 1,
+      "overflow": false,
+      "errors": [],
+      "serverErrors": [],
+      "axeViolations": []
+    },
+    {
+      "route": "/dang-nhap",
+      "width": 1440,
+      "theme": "dark",
+      "title": "Đăng nhập | VCoi",
+      "headings": 1,
+      "overflow": false,
+      "errors": [],
+      "serverErrors": [],
+      "axeViolations": []
+    },
+    {
+      "route": "/dang-ky",
+      "width": 1440,
+      "theme": "dark",
+      "title": "Đăng ký khách hàng | VCoi",
+      "headings": 1,
+      "overflow": false,
+      "errors": [],
+      "serverErrors": [],
+      "axeViolations": []
+    }
+  ],
+  "interactions": [
+    {
+      "case": "anonymous redirect /quan-tri",
+      "passed": true
+    },
+    {
+      "case": "anonymous redirect /khach-hang",
+      "passed": true
+    },
+    {
+      "case": "anonymous redirect /nhan-vien",
+      "passed": true
+    },
+    {
+      "case": "keyboard skip link targets main",
+      "passed": true
+    },
+    {
+      "case": "empty login validates before POST",
+      "passed": true
+    }
+  ]
+}

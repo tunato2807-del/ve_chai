@@ -1,0 +1,182 @@
+[
+  {
+    "name": "react-useEffect",
+    "url": "https://raw.githubusercontent.com/reactjs/react.dev/main/src/content/reference/react/useEffect.md",
+    "status": 200,
+    "sha256": "d4fd102c75df4194f5fa4eae8387f3a0aa7b4ba773c3a5ba29e41bf997a61cdb",
+    "excerpts": {
+      "Strict Mode": [
+        "xternal system,** [you probably don't need an Effect.](/learn/you-might-not-need-an-effect)\n\n* When Strict Mode is on, React will **run one extra development-only setup+cleanup cycle** before the first real setup. This is a stress-test that ensures that your cleanup logic \"mirrors\" your setup logic and that it stops or undoes whatever the setup is doing. If this causes",
+        "ect runs twice when the component mounts {/*my-effect-runs-twice-when-the-component-mounts*/}\n\nWhen Strict Mode is on, in development, React runs setup and cleanup one extra time before the actual setup.\n\nThis is a stress-test that verifies your Effect’s logic is implemented correctly. If this causes visible issues, your cleanup function is missing some logic. The clea"
+      ],
+      "cleanup": [
+        "* `setup`: The function with your Effect's logic. Your setup function may also optionally return a *cleanup* function. When your [component commits](/learn/render-and-commit#step-3-react-commits-changes-to-the-dom), React will run your setup function. After every commit with changed dependencies, React will first run the cleanup function (if you provided it) with t",
+        "ill run your setup function. After every commit with changed dependencies, React will first run the cleanup function (if you provided it) with the old values, and then run your setup function with the new values. After your component is removed from the DOM, React will run your cleanup function.\n\n* **optional** `dependencies`: The list of all reactive values refere"
+      ]
+    }
+  },
+  {
+    "name": "vite-static-deploy",
+    "url": "https://raw.githubusercontent.com/vitejs/vite/main/docs/guide/static-deploy.md",
+    "status": 200,
+    "sha256": "d2de45903bdc6d2ecbb82e05234d7bcd012e062f40cea96e8107ab118aec30e6",
+    "excerpts": {
+      "not meant": [
+        "}\n```\n\nIt is important to note that `vite preview` is intended for previewing the build locally and not meant as a production server.\n\n::: tip NOTE\nThese guides provide instructions for performing a static deployment of your Vite site. Vite also supports Server-Side Rendering. SSR refers to front-end frameworks that support running the same application in Node.js, pr"
+      ],
+      "production server": [
+        "portant to note that `vite preview` is intended for previewing the build locally and not meant as a production server.\n\n::: tip NOTE\nThese guides provide instructions for performing a static deployment of your Vite site. Vite also supports Server-Side Rendering. SSR refers to front-end frameworks that support running the same application in Node.js, pre-rendering it to HTML,"
+      ]
+    }
+  },
+  {
+    "name": "vite-env",
+    "url": "https://raw.githubusercontent.com/vitejs/vite/main/docs/guide/env-and-mode.md",
+    "status": 200,
+    "sha256": "c15b7b8483c2ba01486e49f150aa79d987577a85eea3e580be80b9e71d07badc",
+    "excerpts": {
+      "VITE_": [
+        "nv variables under the `import.meta.env` object as strings automatically.\n\nVariables prefixed with `VITE_` will be exposed in client-side source code after Vite bundling. To prevent accidentally leaking env variables to the client, avoid using this prefix. As an example, consider the following:\n\n```[.env]\nVITE_SOME_KEY=123\nDB_PASSWORD=foobar\n```\n\nThe parsed value",
+        "variables to the client, avoid using this prefix. As an example, consider the following:\n\n```[.env]\nVITE_SOME_KEY=123\nDB_PASSWORD=foobar\n```\n\nThe parsed value of `VITE_SOME_KEY` – `\"123\"` – will be exposed on the client, but the value of `DB_PASSWORD` will not. You can test this by adding the following to your code:\n\n```js\nconsole.log(import.meta.env.VITE_SOME_KE"
+      ],
+      "statically replaced": [
+        "he special `import.meta.env` object. These constants are defined as global variables during dev and statically replaced at build time to make tree-shaking effective.\n\n:::details Example\n\n```js\nif (import.meta.env.DEV) {\n  // code inside here will be tree-shaken in production builds\n  console.log('Dev mode')\n}\n```\n\n:::\n\n<ScrimbaLink href=\"https://scrimba.com/intro-to-vite-c03p6"
+      ]
+    }
+  },
+  {
+    "name": "query-keys",
+    "url": "https://raw.githubusercontent.com/TanStack/query/main/docs/framework/react/guides/query-keys.md",
+    "status": 200,
+    "sha256": "dbd62ca3fc372cada909b9282e2f9ac94e4c695a078fee17b4660df2dd4ac413",
+    "excerpts": {
+      "serializable": [
+        "e string, or as complex as an array of many strings and nested objects. As long as the query key is serializable using `JSON.stringify`, and **unique to the query's data**, you can use it!\n\n## Simple Query Keys\n\nThe simplest form of a key is an array with constants values. This format is useful for:\n\n- Generic List/Index resources\n- Non-hierarchical resources\n\n[//]: # '",
+        "ore information to uniquely describe its data, you can use an array with a string and any number of serializable objects to describe it. This is useful for:\n\n- Hierarchical or nested resources\n  - It's common to pass an ID, index, or other primitive to uniquely identify the item\n- Queries with additional parameters\n  - It's common to pass an object of additional options"
+      ],
+      "array": [
+        "ts core, TanStack Query manages query caching for you based on query keys. Query keys have to be an Array at the top level, and can be as simple as an Array with a single string, or as complex as an array of many strings and nested objects. As long as the query key is serializable using `JSON.stringify`, and **unique to the query's data**, you can use it!\n\n## Sim",
+        "ou based on query keys. Query keys have to be an Array at the top level, and can be as simple as an Array with a single string, or as complex as an array of many strings and nested objects. As long as the query key is serializable using `JSON.stringify`, and **unique to the query's data**, you can use it!\n\n## Simple Query Keys\n\nThe simplest form of a key is an ar"
+      ]
+    }
+  },
+  {
+    "name": "query-invalidation",
+    "url": "https://raw.githubusercontent.com/TanStack/query/main/docs/framework/react/guides/query-invalidation.md",
+    "status": 200,
+    "sha256": "e4cda3acadb7fb216fe6454ef55a790c2baa09a783fdd6c61b5b79d00faca63c",
+    "excerpts": {
+      "invalidateQueries": [
+        " is out of date because of something the user has done. For that purpose, the `QueryClient` has an `invalidateQueries` method that lets you intelligently mark queries as stale and potentially refetch them too!\n\n[//]: # 'Example'\n\n```tsx\n// Invalidate every query in the cache\nqueryClient.invalidateQueries()\n// Invalidate every query with a key that starts with `todos`\nqueryCl",
+        "lly refetch them too!\n\n[//]: # 'Example'\n\n```tsx\n// Invalidate every query in the cache\nqueryClient.invalidateQueries()\n// Invalidate every query with a key that starts with `todos`\nqueryClient.invalidateQueries({ queryKey: ['todos'] })\n```\n\n[//]: # 'Example'\n\n> Note: Where other libraries that use normalized caches would attempt to update local queries with the new data eit"
+      ],
+      "stale": [
+        "---\nid: query-invalidation\ntitle: Query Invalidation\n---\n\nWaiting for queries to become stale before they are fetched again doesn't always work, especially when you know for a fact that a query's data is out of date because of something the user has done. For that purpose, the `QueryClient` has an `invalidateQueries` method that lets you intelligently",
+        "se, the `QueryClient` has an `invalidateQueries` method that lets you intelligently mark queries as stale and potentially refetch them too!\n\n[//]: # 'Example'\n\n```tsx\n// Invalidate every query in the cache\nqueryClient.invalidateQueries()\n// Invalidate every query with a key that starts with `todos`\nqueryClient.invalidateQueries({ queryKey: ['todos'] })\n```\n\n[//]:"
+      ]
+    }
+  },
+  {
+    "name": "spring-csrf",
+    "url": "https://raw.githubusercontent.com/spring-projects/spring-security/7.1.1/docs/modules/ROOT/pages/servlet/exploits/csrf.adoc",
+    "status": 200,
+    "sha256": "a2775ff95086f55547f43e1317d58cdbb22fde81b0cb0d814f9ae424145e735d",
+    "excerpts": {
+      "HttpSessionCsrfTokenRepository": [
+        "` is persisted using a `CsrfTokenRepository`.\n\nBy default, the <<csrf-token-repository-httpsession,`HttpSessionCsrfTokenRepository`>> is used for storing tokens in a session.\nSpring Security also provides the <<csrf-token-repository-cookie,`CookieCsrfTokenRepository`>> for storing tokens in a cookie.\nYou can also specify <<csrf-token-repository-custom,your own implementation>> to store t",
+        "entation>> to store tokens wherever you like.\n\n[[csrf-token-repository-httpsession]]\n=== Using the `HttpSessionCsrfTokenRepository`\n\nBy default, Spring Security stores the expected CSRF token in the `HttpSession` by using javadoc:org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository[], so no additional code is necessary.\n\nThe `HttpSessionCsrfTokenRepository` reads the toke"
+      ],
+      "CsrfTokenRepository": [
+        "ity.web.csrf.DeferredCsrfToken[] is loaded, which holds a reference to the <<csrf-token-repository,`CsrfTokenRepository`>> so that the persisted `CsrfToken` can be loaded later (in image:{icondir}/number_4.png[]).\n* image:{icondir}/number_2.png[] Second, a `Supplier<CsrfToken>` (created from `DeferredCsrfToken`) is given to the <<csrf-token-request-handler,`CsrfTokenRequestHan",
+        "on.\n\n[[csrf-token-repository]]\n== Persisting the `CsrfToken`\n\nThe `CsrfToken` is persisted using a `CsrfTokenRepository`.\n\nBy default, the <<csrf-token-repository-httpsession,`HttpSessionCsrfTokenRepository`>> is used for storing tokens in a session.\nSpring Security also provides the <<csrf-token-repository-cookie,`CookieCsrfTokenRepository`>> for storing tokens in a cookie.\nY"
+      ]
+    }
+  },
+  {
+    "name": "spring-tx",
+    "url": "https://raw.githubusercontent.com/spring-projects/spring-framework/v7.0.9/framework-docs/modules/ROOT/pages/data-access/transaction/declarative/annotations.adoc",
+    "status": 200,
+    "sha256": "b507d81e39de29f5a25102d5c6e8e77c1d45bc6df86b1340987194dc58b6b275",
+    "excerpts": {
+      "self-invocation": [
+        "e default), only external method calls coming in through\nthe proxy are intercepted. This means that self-invocation (in effect, a method within\nthe target object calling another method of the target object) does not lead to an actual\ntransaction at runtime even if the invoked method is marked with `@Transactional`. Also,\nthe proxy must be fully initialized to provide the e",
+        "ethod.\n\nConsider using AspectJ mode (see the `mode` attribute in the following table) if you\nexpect self-invocations to be wrapped with transactions as well. In this case, there is\nno proxy in the first place. Instead, the target class is woven (that is, its byte code\nis modified) to support `@Transactional` runtime behavior on any kind of method.\n\n[[tx-annotation-driven-s"
+      ],
+      "isolation": [
+        "Transactional` settings are as follows:\n\n* The propagation setting is `PROPAGATION_REQUIRED.`\n* The isolation level is `ISOLATION_DEFAULT.`\n* The transaction is read-write.\n* The transaction timeout defaults to the default timeout of the underlying transaction\n  system, or to none if timeouts are not supported.\n* Any `RuntimeException` or `Error` triggers rollback, a",
+        "ngs are as follows:\n\n* The propagation setting is `PROPAGATION_REQUIRED.`\n* The isolation level is `ISOLATION_DEFAULT.`\n* The transaction is read-write.\n* The transaction timeout defaults to the default timeout of the underlying transaction\n  system, or to none if timeouts are not supported.\n* Any `RuntimeException` or `Error` triggers rollback, and any checked `Exce"
+      ]
+    }
+  },
+  {
+    "name": "sql-isolation",
+    "url": "https://raw.githubusercontent.com/MicrosoftDocs/sql-docs/live/docs/t-sql/statements/set-transaction-isolation-level-transact-sql.md",
+    "status": 200,
+    "sha256": "7a948ce0658a90bef8cb2c500abfbe4f9c1b6952381dd3e3aa99d7250801c078",
+    "excerpts": {
+      "phantom": [
+        "s between individual statements within the current transaction, resulting in nonrepeatable reads or phantom data. This option is the [!INCLUDE [ssNoVersion](../../includes/ssnoversion-md.md)] default.\n\nThe behavior of `READ COMMITTED` depends on the setting of the `READ_COMMITTED_SNAPSHOT` database option:\n\n- If `READ_COMMITTED_SNAPSHOT` is set to `OFF` (the defaul",
+        " If the current transaction then retries the statement, it retrieves the new rows, which results in phantom reads. Because shared locks are held to the end of a transaction instead of being released at the end of each statement, concurrency is lower than the default `READ COMMITTED` isolation level. Use this option only when necessary.\n\n#### SNAPSHOT\n\nSpecifies tha"
+      ],
+      "SNAPSHOT": [
+        "TRANSACTION ISOLATION LEVEL\n    { READ UNCOMMITTED\n    | READ COMMITTED\n    | REPEATABLE READ\n    | SNAPSHOT\n    | SERIALIZABLE\n    }\n```\n\nSyntax for Azure Synapse Analytics.\n\n```syntaxsql\nSET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED\n```\n\n> [!NOTE]  \n> [!INCLUDE [ssazuresynapse-md](../../includes/ssazuresynapse-md.md)] implements ACID transactions. The default i",
+        "ansactions. The default isolation level is `READ UNCOMMITTED`. You can change it to `READ COMMITTED SNAPSHOT ISOLATION` by turning `ON` the `READ_COMMITTED_SNAPSHOT` database option for a user database when connected to the `master` database. Once enabled, all transactions in this database are executed under `READ COMMITTED SNAPSHOT ISOLATION` and the setting `READ "
+      ]
+    }
+  },
+  {
+    "name": "npm-ci",
+    "url": "https://raw.githubusercontent.com/npm/cli/v11.9.0/docs/lib/content/commands/npm-ci.md",
+    "status": 200,
+    "sha256": "598213401024326697ce8522f4c6e6ca32be267af668e48d19a7a933e2a30ee9",
+    "excerpts": {
+      "package-lock": [
+        "differences between using `npm install` and `npm ci` are:\n\n* The project **must** have an existing `package-lock.json` or\n  `npm-shrinkwrap.json`.\n* If dependencies in the package lock do not match those in `package.json`,\n  `npm ci` will exit with an error, instead of updating the package lock.\n* `npm ci` can only install entire projects at a time: individual dependenc",
+        "y removed before `npm ci` begins its install.\n* It will never write to `package.json` or any of the package-locks:\n  installs are essentially frozen.\n\nNOTE: If you create your `package-lock.json` file by running `npm install` with flags that can affect the shape of your dependency tree, such as\n`--legacy-peer-deps` or `--install-links`, you _must_ provide the same flags"
+      ],
+      "ignore-scripts": []
+    }
+  },
+  {
+    "name": "mdn-safe-integer",
+    "url": "https://raw.githubusercontent.com/mdn/content/main/files/en-us/web/javascript/reference/global_objects/number/max_safe_integer/index.md",
+    "status": 200,
+    "sha256": "e0f7ffca9b5b1fefb727ec457ac06d4fe887b8c1eeb3b7d5328750b7a50c17a0",
+    "excerpts": {
+      "9007199254740991": [
+        ";\nconst y = Number.MAX_SAFE_INTEGER + 2;\n\nconsole.log(Number.MAX_SAFE_INTEGER);\n// Expected output: 9007199254740991\n\nconsole.log(x);\n// Expected output: 9007199254740992\n\nconsole.log(x === y);\n// Expected output: true\n```\n\n## Value\n\n`9007199254740991` (9,007,199,254,740,991, or \\~9 quadrillion).\n\n{{js_property_attributes(0, 0, 0)}}\n\n## Description\n\n[Double precision floati",
+        "/ Expected output: 9007199254740992\n\nconsole.log(x === y);\n// Expected output: true\n```\n\n## Value\n\n`9007199254740991` (9,007,199,254,740,991, or \\~9 quadrillion).\n\n{{js_property_attributes(0, 0, 0)}}\n\n## Description\n\n[Double precision floating point format](https://en.wikipedia.org/wiki/Double_precision_floating-point_format) only has 52 bits to represent the [mantissa](/en"
+      ],
+      "2^53": []
+    }
+  },
+  {
+    "name": "surefire",
+    "url": "https://raw.githubusercontent.com/apache/maven-surefire/surefire-3.5.6/maven-surefire-plugin/src/main/java/org/apache/maven/plugin/surefire/SurefirePlugin.java",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "name": "npm-ignore-scripts",
+    "url": "https://raw.githubusercontent.com/npm/cli/v11.9.0/workspaces/config/lib/definitions/definitions.js",
+    "status": 200,
+    "sha256": "0517defff7e110f89cc8e582c1877e29ac796cf853e6a391872f5d0a1b90ac89",
+    "excerpts": {
+      "ignore-scripts": [
+        "may only apply for\n      some builds in an otherwise generic CI setup.\n    `,\n    flatten,\n  }),\n  'ignore-scripts': new Definition('ignore-scripts', {\n    default: false,\n    type: Boolean,\n    description: `\n      If true, npm does not run scripts specified in package.json files.\n\n      Note that commands explicitly intended to run a particular script, such\n      as \\`npm start\\`, \\`npm stop\\`, \\`npm restart\\`, \\`npm test\\`, and \\`npm\n      run\\` will still run their intended script if \\`ignore-scripts\\` is\n      set, but they will *not* run any pre- or post-scripts.\n    `,\n    flatten,\n  }),\n  include: new Definition('include', {\n    default: [],\n    ty",
+        "lds in an otherwise generic CI setup.\n    `,\n    flatten,\n  }),\n  'ignore-scripts': new Definition('ignore-scripts', {\n    default: false,\n    type: Boolean,\n    description: `\n      If true, npm does not run scripts specified in package.json files.\n\n      Note that commands explicitly intended to run a particular script, such\n      as \\`npm start\\`, \\`npm stop\\`, \\`npm restart\\`, \\`npm test\\`, and \\`npm\n      run\\` will still run their intended script if \\`ignore-scripts\\` is\n      set, but they will *not* run any pre- or post-scripts.\n    `,\n    flatten,\n  }),\n  include: new Definition('include', {\n    default: [],\n    type: [Array, 'prod', 'dev', 'optio"
+      ]
+    }
+  },
+  {
+    "name": "surefire-main",
+    "url": "https://raw.githubusercontent.com/apache/maven-surefire/master/maven-surefire-common/src/main/java/org/apache/maven/plugin/surefire/AbstractSurefireMojo.java",
+    "status": 200,
+    "sha256": "00a604f6e5ac816988ad75582794ce10d24b5376a0a4342f5aa1c0fb64d430a3",
+    "excerpts": {
+      "failIfNoTests": [
+        "e no tests to run. Defaults to \"false\".\n     *\n     * @since 2.4\n     */\n    @Parameter(property = \"failIfNoTests\", defaultValue = \"false\")\n    private boolean failIfNoTests;\n\n    /**\n     * Relative path to <i>temporary-surefire-boot</i> directory containing internal Surefire temporary files.\n     * <br>\n     * The <i>temporary-surefire-boot</i> directory is <i>project.build.directory</i> on most platforms or\n     * <i>system default temporary-directory</i> specified by the system property {@code java.io.tmpdir}\n     * on Windows (see <a href=\"https://issues.apache.org/jira/browse/SUREFIRE-1400\">SUREFIRE-1400</a>).\n     * <br>\n     * It is deleted after ",
+        " 2.4\n     */\n    @Parameter(property = \"failIfNoTests\", defaultValue = \"false\")\n    private boolean failIfNoTests;\n\n    /**\n     * Relative path to <i>temporary-surefire-boot</i> directory containing internal Surefire temporary files.\n     * <br>\n     * The <i>temporary-surefire-boot</i> directory is <i>project.build.directory</i> on most platforms or\n     * <i>system default temporary-directory</i> specified by the system property {@code java.io.tmpdir}\n     * on Windows (see <a href=\"https://issues.apache.org/jira/browse/SUREFIRE-1400\">SUREFIRE-1400</a>).\n     * <br>\n     * It is deleted after the test set has completed.\n     *\n     * @since 2.20\n     *"
+      ]
+    }
+  }
+]

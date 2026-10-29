@@ -1,0 +1,433 @@
+{
+  "sourceCommit": "2c804bc8090dee4dcdb2ca150404c534ce35f669",
+  "fetchTime": "2026-10-29T07:13:32.398Z",
+  "lighthouseVersion": "13.5.0",
+  "runtimeError": null,
+  "runWarnings": [],
+  "config": {
+    "formFactor": "mobile",
+    "throttlingMethod": "simulate",
+    "throttling": {
+      "rttMs": 150,
+      "throughputKbps": 1638.4,
+      "requestLatencyMs": 562.5,
+      "downloadThroughputKbps": 1474.5600000000002,
+      "uploadThroughputKbps": 675,
+      "cpuSlowdownMultiplier": 4
+    },
+    "screenEmulation": {
+      "mobile": true,
+      "width": 412,
+      "height": 823,
+      "deviceScaleFactor": 1.75,
+      "disabled": false
+    }
+  },
+  "performanceScore": 0.69,
+  "audits": {
+    "first-contentful-paint": {
+      "numericValue": 3070.3626,
+      "numericUnit": "millisecond",
+      "displayValue": "3.1 s"
+    },
+    "largest-contentful-paint": {
+      "numericValue": 6457.3626,
+      "numericUnit": "millisecond",
+      "displayValue": "6.5 s"
+    },
+    "speed-index": {
+      "numericValue": 3070.3626,
+      "numericUnit": "millisecond",
+      "displayValue": "3.1 s"
+    },
+    "total-blocking-time": {
+      "numericValue": 161,
+      "numericUnit": "millisecond",
+      "displayValue": "160 ms"
+    },
+    "cumulative-layout-shift": {
+      "numericValue": 0.0018287203525464036,
+      "numericUnit": "unitless",
+      "displayValue": "0.002"
+    },
+    "interactive": {
+      "numericValue": 6577.362600000001,
+      "numericUnit": "millisecond",
+      "displayValue": "6.6 s"
+    },
+    "total-byte-weight": {
+      "numericValue": 1191618,
+      "numericUnit": "byte",
+      "displayValue": "Total size was 1,164 KiB"
+    }
+  },
+  "estimatedInsights": {
+    "image-delivery-insight": {
+      "displayValue": "Est savings of 566 KiB",
+      "details": {
+        "type": "table",
+        "headings": [
+          {
+            "key": "node",
+            "valueType": "node",
+            "label": ""
+          },
+          {
+            "key": "url",
+            "valueType": "url",
+            "label": "URL",
+            "subItemsHeading": {
+              "key": "reason",
+              "valueType": "text"
+            }
+          },
+          {
+            "key": "totalBytes",
+            "valueType": "bytes",
+            "label": "Resource Size"
+          },
+          {
+            "key": "wastedBytes",
+            "valueType": "bytes",
+            "label": "Est Savings",
+            "subItemsHeading": {
+              "key": "wastedBytes",
+              "valueType": "bytes"
+            }
+          }
+        ],
+        "items": [
+          {
+            "node": {
+              "type": "node",
+              "lhId": "page-0-IMG",
+              "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,0,DIV,0,SECTION,1,DIV,0,IMG",
+              "selector": "div.home-page > section.container > div.hero-visual > img.hero-image",
+              "boundingRect": {
+                "top": 502,
+                "bottom": 922,
+                "left": 18,
+                "right": 394,
+                "width": 376,
+                "height": 420
+              },
+              "snippet": "<img class=\"hero-image\" sizes=\"(max-width: 767px) 800px, 1100px\" alt=\"Các kiện kim loại và giấy được phân loại tại một điểm tái chế, ảnh minh họa\" width=\"1672\" height=\"941\" fetchpriority=\"high\" srcset=\"/recycling-yard-640.webp 640w, /recycling-yard-960.webp 960w, /recycling-y…\" src=\"/recycling-yard.webp\">",
+              "nodeLabel": "Các kiện kim loại và giấy được phân loại tại một điểm tái chế, ảnh minh họa"
+            },
+            "url": "http://127.0.0.1:41861/recycling-yard.webp",
+            "totalBytes": 446300,
+            "wastedBytes": 314310,
+            "subItems": {
+              "type": "subitems",
+              "items": [
+                {
+                  "reason": "Increasing the image compression factor could improve this image's download size.",
+                  "wastedBytes": 314310
+                }
+              ]
+            }
+          },
+          {
+            "node": {
+              "type": "node",
+              "lhId": "page-1-IMG",
+              "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,0,DIV,2,SECTION,0,DIV,3,IMG",
+              "selector": "div.home-page > section#thu-mua > div.materials-intro > img",
+              "boundingRect": {
+                "top": 1534,
+                "bottom": 1745,
+                "left": 18,
+                "right": 394,
+                "width": 376,
+                "height": 212
+              },
+              "snippet": "<img sizes=\"(max-width: 767px) calc(100vw - 36px), 590px\" alt=\"Nhân viên chuẩn bị cân giấy carton đã phân loại, ảnh minh họa\" width=\"1448\" height=\"1086\" loading=\"lazy\" srcset=\"/weighing-640.webp 640w, /weighing.webp 1448w\" src=\"/weighing.webp\">",
+              "nodeLabel": "Nhân viên chuẩn bị cân giấy carton đã phân loại, ảnh minh họa"
+            },
+            "url": "http://127.0.0.1:41861/weighing.webp",
+            "totalBytes": 265402,
+            "wastedBytes": 211282,
+            "subItems": {
+              "type": "subitems",
+              "items": [
+                {
+                  "reason": "Increasing the image compression factor could improve this image's download size.",
+                  "wastedBytes": 69301
+                },
+                {
+                  "reason": "This image file is larger than it needs to be (1448x813) for its displayed dimensions (658x494). Use responsive images to reduce the image download size.",
+                  "wastedBytes": 192156
+                }
+              ]
+            }
+          },
+          {
+            "node": {
+              "type": "node",
+              "lhId": "page-2-IMG",
+              "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,0,DIV,3,SECTION,0,DIV,1,OL,2,LI,0,DIV,0,IMG",
+              "selector": "ol.process-steps > li > div.process-photo > img",
+              "boundingRect": {
+                "top": 3280,
+                "bottom": 3555,
+                "left": -38,
+                "right": 450,
+                "width": 489,
+                "height": 275
+              },
+              "snippet": "<img alt=\"Nhân viên cân giấy carton bằng cân thực tế, ảnh minh họa\" width=\"640\" height=\"400\" loading=\"lazy\" src=\"/weighing-640.webp\">",
+              "nodeLabel": "Nhân viên cân giấy carton bằng cân thực tế, ảnh minh họa"
+            },
+            "url": "http://127.0.0.1:41861/weighing-640.webp",
+            "totalBytes": 66116,
+            "wastedBytes": 27625,
+            "subItems": {
+              "type": "subitems",
+              "items": [
+                {
+                  "reason": "Increasing the image compression factor could improve this image's download size.",
+                  "wastedBytes": 27625
+                }
+              ]
+            }
+          },
+          {
+            "node": {
+              "type": "node",
+              "lhId": "page-3-IMG",
+              "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,0,DIV,3,SECTION,0,DIV,1,OL,3,LI,0,DIV,0,IMG",
+              "selector": "ol.process-steps > li > div.process-photo > img",
+              "boundingRect": {
+                "top": 3615,
+                "bottom": 3922,
+                "left": -67,
+                "right": 479,
+                "width": 545,
+                "height": 307
+              },
+              "snippet": "<img alt=\"Vật liệu đã được thu gom, phân loại để tái chế, ảnh minh họa\" width=\"640\" height=\"400\" loading=\"lazy\" src=\"/recycling-yard-640.webp\">",
+              "nodeLabel": "Vật liệu đã được thu gom, phân loại để tái chế, ảnh minh họa"
+            },
+            "url": "http://127.0.0.1:41861/recycling-yard-640.webp",
+            "totalBytes": 64854,
+            "wastedBytes": 26454,
+            "subItems": {
+              "type": "subitems",
+              "items": [
+                {
+                  "reason": "Increasing the image compression factor could improve this image's download size.",
+                  "wastedBytes": 26454
+                }
+              ]
+            }
+          }
+        ],
+        "debugData": {
+          "type": "debugdata",
+          "wastedBytes": 579671
+        }
+      }
+    },
+    "unused-javascript": {
+      "displayValue": "Est savings of 94 KiB",
+      "details": {
+        "type": "opportunity",
+        "headings": [
+          {
+            "key": "url",
+            "valueType": "url",
+            "subItemsHeading": {
+              "key": "source",
+              "valueType": "code"
+            },
+            "label": "URL"
+          },
+          {
+            "key": "totalBytes",
+            "valueType": "bytes",
+            "subItemsHeading": {
+              "key": "sourceBytes"
+            },
+            "label": "Transfer Size"
+          },
+          {
+            "key": "wastedBytes",
+            "valueType": "bytes",
+            "subItemsHeading": {
+              "key": "sourceWastedBytes"
+            },
+            "label": "Est Savings"
+          }
+        ],
+        "items": [
+          {
+            "url": "http://127.0.0.1:41861/assets/index-DfLjyOPu.js",
+            "totalBytes": 131940,
+            "wastedBytes": 53127,
+            "wastedPercent": 40.26612131523874
+          },
+          {
+            "url": "http://127.0.0.1:41861/assets/schemas-DjcosG5_.js",
+            "totalBytes": 59886,
+            "wastedBytes": 42649,
+            "wastedPercent": 71.21710441925735
+          }
+        ],
+        "overallSavingsMs": 450,
+        "overallSavingsBytes": 95776,
+        "sortedBy": [
+          "wastedBytes"
+        ],
+        "debugData": {
+          "type": "debugdata",
+          "metricSavings": {
+            "FCP": 600,
+            "LCP": 450
+          }
+        }
+      }
+    },
+    "render-blocking-insight": {
+      "displayValue": "Est savings of 900 ms",
+      "details": {
+        "type": "table",
+        "headings": [
+          {
+            "key": "url",
+            "valueType": "url",
+            "label": "URL"
+          },
+          {
+            "key": "totalBytes",
+            "valueType": "bytes",
+            "label": "Transfer Size"
+          },
+          {
+            "key": "wastedMs",
+            "valueType": "timespanMs",
+            "label": "Duration"
+          }
+        ],
+        "items": [
+          {
+            "url": "http://127.0.0.1:41861/assets/index-Bd3ZXbyj.css",
+            "totalBytes": 12146,
+            "wastedMs": 154
+          }
+        ]
+      }
+    },
+    "lcp-breakdown-insight": {
+      "displayValue": null,
+      "details": {
+        "type": "list",
+        "items": [
+          {
+            "type": "table",
+            "headings": [
+              {
+                "key": "label",
+                "valueType": "text",
+                "label": "Subpart"
+              },
+              {
+                "key": "duration",
+                "valueType": "ms",
+                "label": "Duration"
+              }
+            ],
+            "items": [
+              {
+                "subpart": "timeToFirstByte",
+                "label": "Time to first byte",
+                "duration": 5.879
+              },
+              {
+                "subpart": "resourceLoadDelay",
+                "label": "Resource load delay",
+                "duration": 16.287
+              },
+              {
+                "subpart": "resourceLoadDuration",
+                "label": "Resource load duration",
+                "duration": 21.284
+              },
+              {
+                "subpart": "elementRenderDelay",
+                "label": "Element render delay",
+                "duration": 280.232
+              }
+            ]
+          },
+          {
+            "type": "node",
+            "lhId": "page-0-IMG",
+            "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,0,DIV,0,SECTION,1,DIV,0,IMG",
+            "selector": "div.home-page > section.container > div.hero-visual > img.hero-image",
+            "boundingRect": {
+              "top": 502,
+              "bottom": 922,
+              "left": 18,
+              "right": 394,
+              "width": 376,
+              "height": 420
+            },
+            "snippet": "<img class=\"hero-image\" sizes=\"(max-width: 767px) 800px, 1100px\" alt=\"Các kiện kim loại và giấy được phân loại tại một điểm tái chế, ảnh minh họa\" width=\"1672\" height=\"941\" fetchpriority=\"high\" srcset=\"/recycling-yard-640.webp 640w, /recycling-yard-960.webp 960w, /recycling-y…\" src=\"/recycling-yard.webp\">",
+            "nodeLabel": "Các kiện kim loại và giấy được phân loại tại một điểm tái chế, ảnh minh họa"
+          }
+        ]
+      }
+    },
+    "lcp-discovery-insight": {
+      "displayValue": null,
+      "details": {
+        "type": "list",
+        "items": [
+          {
+            "type": "checklist",
+            "items": {
+              "priorityHinted": {
+                "label": "fetchpriority=high applied",
+                "value": true
+              },
+              "requestDiscoverable": {
+                "label": "Request is discoverable in initial document",
+                "value": true
+              },
+              "eagerlyLoaded": {
+                "label": "LCP resources should not use loading=lazy",
+                "value": true
+              }
+            }
+          },
+          {
+            "type": "node",
+            "lhId": "page-0-IMG",
+            "path": "1,HTML,1,BODY,0,DIV,1,DIV,1,MAIN,0,DIV,0,SECTION,1,DIV,0,IMG",
+            "selector": "div.home-page > section.container > div.hero-visual > img.hero-image",
+            "boundingRect": {
+              "top": 502,
+              "bottom": 922,
+              "left": 18,
+              "right": 394,
+              "width": 376,
+              "height": 420
+            },
+            "snippet": "<img class=\"hero-image\" sizes=\"(max-width: 767px) 800px, 1100px\" alt=\"Các kiện kim loại và giấy được phân loại tại một điểm tái chế, ảnh minh họa\" width=\"1672\" height=\"941\" fetchpriority=\"high\" srcset=\"/recycling-yard-640.webp 640w, /recycling-yard-960.webp 960w, /recycling-y…\" src=\"/recycling-yard.webp\">",
+            "nodeLabel": "Các kiện kim loại và giấy được phân loại tại một điểm tái chế, ảnh minh họa"
+          }
+        ]
+      }
+    }
+  },
+  "limitations": [
+    "single localhost laboratory run",
+    "real Spring Boot backend with temporary H2 MSSQLServer mode, not SQL Server",
+    "Vite preview serves production build",
+    "no production load, field INP or p95 SQL Server measurements",
+    "no before/after optimization experiment"
+  ],
+  "requestedUrl": "http://127.0.0.1:41861/",
+  "finalUrl": "http://127.0.0.1:41861/",
+  "route": "/"
+}

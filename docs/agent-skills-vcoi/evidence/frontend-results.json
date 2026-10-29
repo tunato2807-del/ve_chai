@@ -1,0 +1,70 @@
+[
+  {
+    "case": "invalid calendar day rejected",
+    "passed": true
+  },
+  {
+    "case": "Vietnam time converted to UTC",
+    "passed": true
+  },
+  {
+    "case": "blank category name rejected",
+    "passed": true
+  },
+  {
+    "case": "unsupported material unit rejected",
+    "passed": true
+  },
+  {
+    "case": "non HTTP image URL rejected",
+    "passed": true
+  },
+  {
+    "case": "image URL credentials rejected",
+    "passed": true
+  },
+  {
+    "case": "empty optional category description normalizes to null",
+    "passed": true
+  },
+  {
+    "case": "comma decimal parsed exactly",
+    "passed": true
+  },
+  {
+    "case": "excess weight decimals rejected",
+    "passed": true
+  },
+  {
+    "case": "net weight calculated",
+    "passed": true
+  },
+  {
+    "case": "gross equal to tare invalid",
+    "passed": true
+  },
+  {
+    "case": "quote line rounds HALF_UP",
+    "passed": true
+  },
+  {
+    "case": "31 day inclusive report selection",
+    "passed": true
+  },
+  {
+    "case": "report period longer than 366 days rejected",
+    "passed": true
+  },
+  {
+    "case": "frontend rejects address accepted by backend",
+    "passed": true
+  },
+  {
+    "case": "REPRO: valid backend large price fails frontend response schema",
+    "passed": true
+  },
+  {
+    "case": "REPRO: independently accepted report responses have unequal totals",
+    "passed": true
+  }
+]

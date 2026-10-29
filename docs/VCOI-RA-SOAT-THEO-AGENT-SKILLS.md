@@ -1,5 +1,7 @@
 # VCoi / EcoThuGom — Những hạng mục cần sửa theo Agent Skills
 
+Bổ sung sau báo cáo này: [bộ hướng dẫn đủ 25 skill](agent-skills-vcoi/README.md), kèm [bằng chứng trình duyệt/hiệu năng và trạng thái mới](agent-skills-vcoi/EVIDENCE.md). Các giới hạn bên dưới mô tả riêng lượt rà soát ban đầu.
+
 Ngày rà soát: **29/10/2026**. Dự án nguồn: [1250080247-cloud/VCOI](https://github.com/1250080247-cloud/VCOI).
 
 Phiên bản được kiểm tra: `2c804bc8090dee4dcdb2ca150404c534ce35f669`, là HEAD của nhánh `main` tại thời điểm lấy mã. Bản sao trong `tunato2807-del/ve_chai` có cùng nội dung mã nguồn này. Các liên kết mã bên dưới được cố định theo commit để số dòng không thay đổi khi dự án được cập nhật.

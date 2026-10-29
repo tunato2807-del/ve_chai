@@ -1,0 +1,838 @@
+[
+  {
+    "case": "login 01",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "register customer",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "login 02",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "register customer",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "login 03",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "public registration cannot grant ADMIN",
+    "expected": 400,
+    "actual": 400,
+    "passed": true
+  },
+  {
+    "case": "admin creates collector",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "login 04",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "admin creates collector",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "login 05",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "customer cannot administer catalog",
+    "expected": 403,
+    "actual": 403,
+    "passed": true
+  },
+  {
+    "case": "anonymous cannot read private orders",
+    "expected": 401,
+    "actual": 401,
+    "passed": true
+  },
+  {
+    "case": "missing CSRF blocked",
+    "expected": 403,
+    "actual": 403,
+    "passed": true
+  },
+  {
+    "case": "create category",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "duplicate category blocked",
+    "expected": 409,
+    "actual": 409,
+    "passed": true
+  },
+  {
+    "case": "edit category",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "create material",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "duplicate material blocked",
+    "expected": 409,
+    "actual": 409,
+    "passed": true
+  },
+  {
+    "case": "unsupported material unit blocked",
+    "expected": 400,
+    "actual": 400,
+    "passed": true
+  },
+  {
+    "case": "hide category",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "read filtered public materials",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "hidden category absent publicly",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "case": "show category",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "physical catalog delete unavailable",
+    "expected": 405,
+    "actual": 405,
+    "passed": true
+  },
+  {
+    "case": "create draft price",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "edit price draft",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "stale price revision blocked",
+    "expected": 409,
+    "actual": 409,
+    "passed": true
+  },
+  {
+    "case": "approve price",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "approved price cannot edit",
+    "expected": 409,
+    "actual": 409,
+    "passed": true
+  },
+  {
+    "case": "create first address",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "first address becomes default",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "case": "create second address",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "other customer cannot read address",
+    "expected": 404,
+    "actual": 404,
+    "passed": true
+  },
+  {
+    "case": "set address default",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "delete default address",
+    "expected": 204,
+    "actual": 204,
+    "passed": true
+  },
+  {
+    "case": "read addresses",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "delete default promotes remaining address",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "case": "book saved address",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "estimated total correct",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "case": "edit source address",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "read order",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "order address remains original",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "case": "delete used source address",
+    "expected": 204,
+    "actual": 204,
+    "passed": true
+  },
+  {
+    "case": "read order",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "read order",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "deleting source retains order snapshot",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "case": "other customer cannot read order",
+    "expected": 404,
+    "actual": 404,
+    "passed": true
+  },
+  {
+    "case": "unassigned collector cannot read order",
+    "expected": 404,
+    "actual": 404,
+    "passed": true
+  },
+  {
+    "case": "cannot skip assignment",
+    "expected": 404,
+    "actual": 404,
+    "passed": true
+  },
+  {
+    "case": "confirm",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "stale confirm blocked",
+    "expected": 409,
+    "actual": 409,
+    "passed": true
+  },
+  {
+    "case": "assign",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "upload customer material evidence",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "owner reads private evidence",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "other customer cannot read private evidence",
+    "expected": 404,
+    "actual": 404,
+    "passed": true
+  },
+  {
+    "case": "anonymous cannot read private evidence",
+    "expected": 401,
+    "actual": 401,
+    "passed": true
+  },
+  {
+    "case": "read order",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "overlapping booking",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "confirm",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "overlapping dispatch blocked",
+    "expected": 409,
+    "actual": 409,
+    "passed": true
+  },
+  {
+    "case": "reassign",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "old collector loses order access",
+    "expected": 404,
+    "actual": 404,
+    "passed": true
+  },
+  {
+    "case": "reassign",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "start-trip",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "cannot weigh before arrival",
+    "expected": 409,
+    "actual": 409,
+    "passed": true
+  },
+  {
+    "case": "arrive",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "cannot quote without weights",
+    "expected": 409,
+    "actual": 409,
+    "passed": true
+  },
+  {
+    "case": "record weighing",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "read order",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "cannot overwrite weighing without correction reference",
+    "expected": 409,
+    "actual": 409,
+    "passed": true
+  },
+  {
+    "case": "append weighing correction",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "correction retains history",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "case": "read order",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "upload collector weighing evidence",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "read order",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "send quote",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "quote uses newest net weight",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "case": "read order",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "customer rejects quote",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "read order",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "send replacement quote",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "read order",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "customer accepts quote",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "read order",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "stop accepting material after accepted quote",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "customer cannot record payment",
+    "expected": 403,
+    "actual": 403,
+    "passed": true
+  },
+  {
+    "case": "pay accepted snapshot after material stopped",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "payment amount equals accepted quote",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "case": "duplicate payment blocked",
+    "expected": 409,
+    "actual": 409,
+    "passed": true
+  },
+  {
+    "case": "receipt after payment",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "receipt uses exact corrected weighing",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "case": "read order",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "open dispute after payment",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "duplicate active dispute blocked",
+    "expected": 409,
+    "actual": 409,
+    "passed": true
+  },
+  {
+    "case": "receipt remains during dispute",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "resolve dispute",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "resolution restores completed status",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "case": "closed dispute immutable",
+    "expected": 409,
+    "actual": 409,
+    "passed": true
+  },
+  {
+    "case": "resume material acceptance",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "new order for cancellation",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "request cancellation",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "cancel request does not directly cancel",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "case": "approve cancellation",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "read order",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "approved cancellation changes order",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "case": "order for rescheduling",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "direct reschedule before trip",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "read order",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "confirm",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "assign",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "start-trip",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "request reschedule during trip",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "approve reschedule during trip",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "read order",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "rescheduling departed order clears collector",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "case": "report overview",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "report retains paid amount after complaint",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "case": "report material breakdown",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "report collector breakdown",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "read category before concurrent edits",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "admin A changes category description",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "admin B saves stale category form",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "REPRO: stale category update loses A change",
+    "passed": true,
+    "detail": null
+  },
+  {
+    "case": "REPRO: save individually valid address longer than booking limit",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "REPRO: saved address cannot be used to book",
+    "expected": 400,
+    "actual": 400,
+    "passed": true
+  },
+  {
+    "case": "lock collector",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "unlock collector before any request",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "REPRO: old session survives lock-unlock without intervening request",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "order for locked collector recovery",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "confirm",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "assign",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "start-trip",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "arrive",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "lock collector after arrival",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "locked collector cannot continue",
+    "expected": 401,
+    "actual": 401,
+    "passed": true
+  },
+  {
+    "case": "REPRO: admin cannot reassign arrived order of locked collector",
+    "expected": 409,
+    "actual": 409,
+    "passed": true
+  },
+  {
+    "case": "unlock collector to restore test environment",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "REPRO: create price above frontend safe integer limit",
+    "expected": 201,
+    "actual": 201,
+    "passed": true
+  },
+  {
+    "case": "edit customer profile",
+    "expected": 200,
+    "actual": 200,
+    "passed": true
+  },
+  {
+    "case": "password change rejects incorrect current password",
+    "expected": 400,
+    "actual": 400,
+    "passed": true
+  },
+  {
+    "case": "change password",
+    "expected": 204,
+    "actual": 204,
+    "passed": true
+  },
+  {
+    "case": "password change ends active session",
+    "expected": 401,
+    "actual": 401,
+    "passed": true
+  }
+]

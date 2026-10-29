@@ -7,7 +7,7 @@
 | 1 | Giới thiệu tổng quan | 25 giây |
 | 2 | Các phân hệ và nghiệp vụ | 40 giây |
 | 3 | Kiến trúc và luồng giao dịch | 40 giây |
-| 4 | Thiết kế cơ sở dữ liệu | 25 giây |
+| 4 | Sơ đồ Use Case tổng quát | 25 giây |
 | 5 | Kết quả và hướng phát triển | 30 giây |
 
 ## Slide 1 — Giới thiệu tổng quan
@@ -28,11 +28,11 @@ Về kiến trúc, React và Vite xây dựng giao diện; Spring Boot cung cấ
 
 **Lưu ý:** Các khối là kiến trúc sản phẩm đọc từ mã. Ảnh chạy thử trong bộ slide dùng backend thật với H2 tạm để có dữ liệu minh họa, không phải bằng chứng đã kiểm thử SQL Server đầy đủ.
 
-## Slide 4 — Thiết kế cơ sở dữ liệu
+## Slide 4 — Sơ đồ Use Case tổng quát
 
-ERD rút gọn nối người dùng với đơn thu gom, rồi tới các dòng vật liệu, phiếu cân, báo giá và khoản chi. Một đơn có nhiều vật liệu và có thể có nhiều phiên bản báo giá. Khóa ngoại giúp giữ quan hệ giữa các bản ghi. Version hỗ trợ từ chối thao tác trên bản đơn cũ; ràng buộc dữ liệu giới hạn một khoản chi hoàn tất cho mỗi đơn. Các bảng và snapshot giúp giữ lại thông tin đã chốt để đối chiếu.
+Sơ đồ Use Case mô tả ba tác nhân tương tác với VCoi. Khách hàng đặt lịch thu gom và duyệt báo giá. Nhân viên cân, lập báo giá và ghi nhận khoản chi mô phỏng. Quản trị viên quản lý vật liệu, bảng giá, phân công nhân viên và xem thống kê khoản chi. Các chức năng nằm trong ranh giới hệ thống, còn tác nhân đứng bên ngoài. Mỗi vai trò chỉ thực hiện những thao tác được cấp quyền.
 
-**Lưu ý:** Sơ đồ chỉ vẽ một số khóa ngoại, không phải ERD đầy đủ. Các bảng địa chỉ, danh mục, giá, khiếu nại và audit được lược bớt. Chỉ mô tả cơ chế trong code/schema; chưa tuyên bố kiểm chứng mọi race trên SQL Server.
+**Lưu ý:** Sơ đồ rút gọn giữ tám use case chính, không phải toàn bộ chức năng của dự án. Theo dõi đơn, biên nhận, địa chỉ và khiếu nại được giới thiệu ở phân hệ hoặc demo. Các đường nối liền không có mũi tên là quan hệ tương tác, không thể hiện thứ tự xử lý. Đăng nhập và phân quyền là điều kiện chung; không thêm quan hệ include/extend khi chưa mô tả chính xác hành vi.
 
 ## Slide 5 — Kết quả và hướng phát triển
 
@@ -44,4 +44,4 @@ Kết quả là giao diện cho khách, nhân viên và quản trị cùng các 
 
 Mã nguồn: https://github.com/1250080247-cloud/VCOI, commit `2c804bc8090dee4dcdb2ca150404c534ce35f669`.
 
-Ảnh giao diện chụp từ frontend thật và backend thật với dữ liệu giả lập trên H2 tạm. Kiến trúc sản phẩm đọc từ code/schema dùng SQL Server. Sơ đồ kiến trúc, luồng và ERD trong PowerPoint là các hình/khối chỉnh sửa được; ERD đã lược bớt bảng và quan hệ phụ. Không có số liệu doanh thu, phần trăm hoàn thiện hoặc tích hợp VNPay/MoMo được tự thêm vào slide.
+Ảnh giao diện chụp từ frontend thật và backend thật với dữ liệu giả lập trên H2 tạm. Kiến trúc sản phẩm đọc từ code/schema dùng SQL Server. Sơ đồ kiến trúc, luồng giao dịch và Use Case trong PowerPoint là các hình/khối chỉnh sửa được. Sơ đồ Use Case rút gọn gồm ba tác nhân và tám chức năng chính, thể hiện quan hệ tương tác theo vai trò. Không có số liệu doanh thu, phần trăm hoàn thiện hoặc tích hợp VNPay/MoMo được tự thêm vào slide.

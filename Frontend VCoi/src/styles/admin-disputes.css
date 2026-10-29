@@ -1,0 +1,117 @@
+.dispute-table {
+  min-width: 800px;
+}
+.dispute-table td:nth-child(2) {
+  min-width: 150px;
+}
+.dispute-table .text-button {
+  min-height: 44px;
+  font-size: 12px;
+}
+.dispute-table-reason {
+  max-width: 320px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.dispute-panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+.dispute-panel-heading > div {
+  min-width: 0;
+}
+.dispute-panel-heading .catalog-state {
+  flex-shrink: 0;
+  font-size: 12px;
+}
+.dispute-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 32px;
+  padding-block: 24px;
+  margin-block: 24px;
+  border-block: 1px solid var(--line);
+}
+.dispute-body > div {
+  min-width: 0;
+}
+.dispute-detail h3,
+.dispute-result h3 {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.dispute-copy {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.dispute-context {
+  display: grid;
+  gap: 20px;
+  align-content: start;
+}
+.dispute-context dt {
+  color: var(--muted);
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+.dispute-context dd {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.dispute-context small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 8px;
+}
+.dispute-detail .form-notice,
+.dispute-conclusion {
+  margin-bottom: 24px;
+}
+.dispute-conclusion {
+  padding: 20px;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+}
+.dispute-conclusion .field-hint {
+  margin-top: 12px;
+}
+.dispute-reason-summary {
+  border-left: 3px solid var(--accent);
+  padding-left: 16px;
+  margin-block: 24px;
+}
+.dispute-reason-summary strong {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
+}
+.dispute-reason-summary p {
+  margin-top: 8px;
+}
+.dispute-decision > .field-hint {
+  margin-bottom: 24px;
+}
+.dispute-detail h2,
+.dispute-decision h2,
+.dispute-result h2,
+.dispute-result p {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 767px) {
+  .dispute-panel-heading {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .dispute-body {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}

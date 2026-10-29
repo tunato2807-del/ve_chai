@@ -1,0 +1,214 @@
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.header-inner {
+  height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 2rem;
+  letter-spacing: -0.07em;
+  font-weight: 700;
+  line-height: 1;
+}
+.brand svg,
+.brand-period {
+  color: var(--accent);
+}
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+.navigation a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.navigation a:hover,
+.navigation a[aria-current='page'] {
+  color: var(--accent);
+}
+.menu-toggle {
+  display: none;
+}
+.site-footer {
+  border-top: 1px solid var(--line);
+  background: var(--surface-soft);
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 70px;
+  padding-block: 58px;
+}
+.footer-top > div:first-child > p {
+  margin-top: 24px;
+  font-size: 1.35rem;
+  line-height: 1.5;
+  letter-spacing: -0.04em;
+}
+.footer-top nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+}
+.footer-top nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.86rem;
+  min-height: 30px;
+}
+.footer-top nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.footer-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.footer-project p {
+  font-size: 0.8rem;
+  line-height: 1.9;
+  margin-top: 14px;
+}
+.footer-bottom {
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-block: 24px;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.not-found {
+  padding-block: 110px;
+}
+.not-found h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  letter-spacing: -0.05em;
+  margin-block: 18px;
+}
+.not-found .button {
+  margin-top: 28px;
+}
+@media (max-width: 1023px) {
+  .navigation {
+    gap: 18px;
+    font-size: 0.74rem;
+  }
+  .header-inner {
+    gap: 20px;
+  }
+  .footer-top {
+    gap: 35px;
+  }
+}
+@media (max-width: 767px) {
+  .header-inner {
+    height: 70px;
+  }
+  .brand {
+    font-size: 1.8rem;
+  }
+  .menu-toggle {
+    display: inline-flex;
+  }
+  .navigation {
+    display: none;
+    position: absolute;
+    inset: 70px 0 auto;
+    padding: 20px 28px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 15px 25px #0000000d;
+  }
+  .navigation.is-open {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+  .navigation a {
+    min-height: 48px;
+    font-size: 0.92rem;
+  }
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    padding-block: 40px;
+  }
+  .footer-project {
+    grid-column: 1 / -1;
+    max-width: 420px;
+  }
+  .footer-bottom {
+    align-items: flex-start;
+  }
+}
+@media (max-width: 399px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+  }
+  .footer-bottom {
+    flex-direction: column;
+  }
+}
+
+/* VCoi identity: a quiet header and clear account entry. */
+.site-header {
+  background: var(--canvas);
+}
+.header-inner {
+  height: 78px;
+}
+.brand {
+  font-size: 2.1rem;
+}
+.brand svg,
+.brand-period {
+  color: var(--ink);
+}
+.navigation a {
+  font-size: 0.76rem;
+}
+.site-footer {
+  background: var(--surface-soft);
+}
+.footer-top {
+  padding-block: 64px;
+}
+.footer-top > div:first-child > p {
+  font-size: 1.65rem;
+  font-weight: 500;
+}
+.footer-label {
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+}
+@media (max-width: 1100px) {
+  .header-inner {
+    height: 70px;
+  }
+  .navigation a {
+    font-size: 0.88rem;
+  }
+}

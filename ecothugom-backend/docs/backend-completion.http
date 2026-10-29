@@ -1,0 +1,85 @@
+@baseUrl = http://127.0.0.1:8080
+@csrfToken = paste-current-session-token
+@orderId = 1
+@requestId = 1
+@disputeId = 1
+@addressId = 1
+
+### Đăng nhập đúng vai trò theo auth-api.http. Lấy token mới sau login/đổi mật khẩu.
+GET {{baseUrl}}/api/auth/csrf
+
+### CUSTOMER: sửa hồ sơ riêng, không gửi role/status/phone
+PUT {{baseUrl}}/api/auth/profile
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{"fullName":"Tên người dùng","email":null}
+
+### CUSTOMER: thêm địa chỉ
+POST {{baseUrl}}/api/customer/addresses
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{"pickupAddress":{"contactName":"Người liên hệ","contactPhone":"0934567890","addressLine":"12 Đường thử","province":"TP Hồ Chí Minh"},"isDefault":true}
+
+### CUSTOMER: đặt lịch bằng địa chỉ, không gửi pickupAddress cùng lúc
+POST {{baseUrl}}/api/customer/orders
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{"addressId":{{addressId}},"pickupStart":"2026-10-25T09:00:00+07:00","pickupEnd":"2026-10-25T10:00:00+07:00","items":[{"materialId":1,"estimatedQty":2}]}
+
+### CUSTOMER: đây là gửi yêu cầu hủy; chưa chuyển CANCELLED
+POST {{baseUrl}}/api/customer/orders/{{orderId}}/cancel
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{"version":2,"reason":"Đề nghị admin trao đổi để hủy lịch"}
+
+### ADMIN: đăng nhập lại và lấy CSRF mới trước khi duyệt; tải version hiện tại
+GET {{baseUrl}}/api/admin/order-change-requests?status=PENDING
+
+### ADMIN duyệt yêu cầu, chỉ bước này mới hủy đơn
+POST {{baseUrl}}/api/admin/order-change-requests/{{requestId}}/approve
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{"version":3,"requestVersion":0,"responseNote":"Đã trao đổi với khách"}
+
+### Đọc lịch sử và biên nhận (receipt 409 nếu chưa thanh toán)
+GET {{baseUrl}}/api/customer/orders/{{orderId}}/timeline?page=0&size=20
+
+###
+GET {{baseUrl}}/api/customer/orders/{{orderId}}/receipt
+
+### Ảnh: dùng Body form-data file=File, version=Text trong Postman; xem hướng dẫn ../../README.md#doc-ecothugom-backend-docs-backend-completion-md
+
+### CUSTOMER mở khiếu nại sau hoàn tất, lấy đúng version mới nhất
+POST {{baseUrl}}/api/customer/orders/{{orderId}}/disputes
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{"version":8,"reason":"Đề nghị kiểm tra biên nhận"}
+
+### ADMIN tiếp nhận
+POST {{baseUrl}}/api/admin/disputes/{{disputeId}}/review
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{"version":9}
+
+### ADMIN kết luận; không tự sửa tiền đã chi
+POST {{baseUrl}}/api/admin/disputes/{{disputeId}}/resolve
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{"version":10,"resolution":"Đã đối chiếu và thống nhất"}
+
+### ADMIN thống kê kỳ lịch Việt Nam, to không bao gồm
+GET {{baseUrl}}/api/admin/reports/overview?from=2026-10-01&to=2026-11-01
+
+###
+GET {{baseUrl}}/api/admin/reports/materials?from=2026-10-01&to=2026-11-01&page=0&size=20
+
+###
+GET {{baseUrl}}/api/admin/reports/collectors?from=2026-10-01&to=2026-11-01&page=0&size=20

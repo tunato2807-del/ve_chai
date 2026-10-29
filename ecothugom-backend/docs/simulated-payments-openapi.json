@@ -1,0 +1,977 @@
+{
+  "openapi": "3.1.0",
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8080",
+      "description": "Windows local development"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "JSESSIONID"
+      },
+      "csrfToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-CSRF-TOKEN"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "required": [
+          "id",
+          "fullName",
+          "phone",
+          "role",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "email"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "CUSTOMER",
+              "COLLECTOR",
+              "ADMIN"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "LOCKED"
+            ]
+          }
+        }
+      },
+      "Registration": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "fullName",
+          "phone",
+          "password"
+        ],
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "phone": {
+            "type": "string",
+            "pattern": "^0[35789][0-9]{8}$"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 254,
+            "description": "Optional; blank becomes null, trimmed and normalized to lowercase."
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "minLength": 12,
+            "maxLength": 64,
+            "writeOnly": true,
+            "description": "Maximum 72 UTF-8 bytes."
+          }
+        }
+      },
+      "Login": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "identifier",
+          "password"
+        ],
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 254,
+            "description": "Phone or email; trimmed, email is case insensitive."
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "minLength": 1,
+            "maxLength": 64,
+            "writeOnly": true,
+            "description": "Maximum 72 UTF-8 bytes."
+          }
+        }
+      },
+      "Csrf": {
+        "type": "object",
+        "required": [
+          "headerName",
+          "token"
+        ],
+        "properties": {
+          "headerName": {
+            "type": "string",
+            "const": "X-CSRF-TOKEN"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "StatusChange": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "LOCKED"
+            ]
+          }
+        }
+      },
+      "OrderSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "code": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "pickupStart": {
+            "type": "string",
+            "description": "UTC date-time without zone suffix, stored as SQL DATETIME2."
+          },
+          "pickupEnd": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        }
+      },
+      "Problem": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string"
+          }
+        }
+      },
+      "UserPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "page",
+          "size",
+          "totalElements",
+          "totalPages"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "size": {
+            "type": "integer"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer"
+          }
+        }
+      },
+      "OrderPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "page",
+          "size",
+          "totalElements",
+          "totalPages"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderSummary"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "size": {
+            "type": "integer"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer"
+          }
+        }
+      },
+      "SimulatedPaymentRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "version",
+          "quoteId",
+          "method",
+          "requestKey"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483646
+          },
+          "quoteId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "method": {
+            "type": "string",
+            "enum": [
+              "CASH_SIMULATED",
+              "TRANSFER_SIMULATED"
+            ]
+          },
+          "requestKey": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+          }
+        }
+      },
+      "Payment": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "orderId",
+          "quoteId",
+          "recordedBy",
+          "amount",
+          "currency",
+          "method",
+          "status",
+          "requestKey",
+          "paidAt",
+          "referenceCode",
+          "createdAt",
+          "orderStatus",
+          "orderVersion",
+          "completedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "quoteId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "recordedBy": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "amount": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "multipleOf": 1
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "VND"
+            ]
+          },
+          "method": {
+            "type": "string",
+            "enum": [
+              "CASH_SIMULATED",
+              "TRANSFER_SIMULATED"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "FAILED",
+              "COMPLETED"
+            ]
+          },
+          "requestKey": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "paidAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "referenceCode": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 100
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "orderStatus": {
+            "type": "string"
+          },
+          "orderVersion": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "completedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "OrderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 1
+        }
+      }
+    }
+  },
+  "info": {
+    "title": "EcoThuGom Simulated Payments API",
+    "version": "1.0.0",
+    "description": "One dealer pays the scrap seller in a course-project simulation. No real transfers or external payment provider. ../../README.md#doc-ecothugom-backend-docs-simulated-payments-md defines behavior; this self-contained OpenAPI supports import into Postman. All duplicates return 409; no response replay."
+  },
+  "paths": {
+    "/api/auth/csrf": {
+      "get": {
+        "operationId": "getCsrf",
+        "summary": "Get CSRF token; retain session cookie",
+        "description": "",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Csrf"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "operationId": "login",
+        "summary": "Sign in; rotate session ID and invalidate old CSRF",
+        "description": "",
+        "security": [
+          {
+            "csrfToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or unsupported fields",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated or invalid credentials",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing/invalid CSRF token or forbidden role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit; Retry-After contains seconds",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until another attempt may be made."
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "operationId": "currentUser",
+        "summary": "Get current user",
+        "description": "Required role: any authenticated. Authorization uses the current server-side account, not client-supplied identity.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated or invalid credentials",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "operationId": "logout",
+        "summary": "Invalidate session; fetch new CSRF before next login",
+        "description": "",
+        "security": [
+          {
+            "csrfToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Session invalidated"
+          },
+          "403": {
+            "description": "Missing/invalid CSRF token or forbidden role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/collector/orders/{id}/payments/simulate": {
+      "post": {
+        "operationId": "simulateCollectorPayment",
+        "summary": "COLLECTOR ghi nhận thanh toán mô phỏng",
+        "description": "Only assigned ACTIVE collector; AWAITING_PAYMENT and exact order version; current ACCEPTED quote of this order. Server copies accepted total, records UTC paidAt/completedAt and SIM reference. One atomic transaction updates order/version, inserts payment and audit. Every duplicate key or completed order returns 409, without replay. Old PENDING/FAILED records remain. Quote response expiry does not invalidate an already ACCEPTED quote.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created COMPLETED payment and COMPLETED order atomically",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Payment"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or locked account",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Wrong role or invalid CSRF",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Order or quote outside authorized scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State/version/request key/completed payment conflict; GET result before retrying",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Persistence failure; rolled back",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimulatedPaymentRequest"
+              },
+              "example": {
+                "version": 7,
+                "quoteId": 21,
+                "method": "CASH_SIMULATED",
+                "requestKey": "5feebfac-a549-41ad-ab35-e8d14e291e03"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/customer/orders/{id}/payments": {
+      "get": {
+        "operationId": "customerListOrderPayments",
+        "summary": "Xem thanh toán trong phạm vi CUSTOMER",
+        "description": "CUSTOMER own orders; COLLECTOR assigned orders; ADMIN any order. At most 100 rows, createdAt DESC then id DESC. orderVersion/orderStatus/completedAt describe current order; paidAt/amount describe payment. Evidence URL is not exposed.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent payments, or []",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "maxItems": 100,
+                  "items": {
+                    "$ref": "#/components/schemas/Payment"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or locked account",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Wrong role or invalid CSRF",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Order or quote outside authorized scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State/version/request key/completed payment conflict; GET result before retrying",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Persistence failure; rolled back",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/collector/orders/{id}/payments": {
+      "get": {
+        "operationId": "collectorListOrderPayments",
+        "summary": "Xem thanh toán trong phạm vi COLLECTOR",
+        "description": "CUSTOMER own orders; COLLECTOR assigned orders; ADMIN any order. At most 100 rows, createdAt DESC then id DESC. orderVersion/orderStatus/completedAt describe current order; paidAt/amount describe payment. Evidence URL is not exposed.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent payments, or []",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "maxItems": 100,
+                  "items": {
+                    "$ref": "#/components/schemas/Payment"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or locked account",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Wrong role or invalid CSRF",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Order or quote outside authorized scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State/version/request key/completed payment conflict; GET result before retrying",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Persistence failure; rolled back",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/orders/{id}/payments": {
+      "get": {
+        "operationId": "adminListOrderPayments",
+        "summary": "Xem thanh toán trong phạm vi ADMIN",
+        "description": "CUSTOMER own orders; COLLECTOR assigned orders; ADMIN any order. At most 100 rows, createdAt DESC then id DESC. orderVersion/orderStatus/completedAt describe current order; paidAt/amount describe payment. Evidence URL is not exposed.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent payments, or []",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "maxItems": 100,
+                  "items": {
+                    "$ref": "#/components/schemas/Payment"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required or locked account",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Wrong role or invalid CSRF",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Order or quote outside authorized scope",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State/version/request key/completed payment conflict; GET result before retrying",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Persistence failure; rolled back",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

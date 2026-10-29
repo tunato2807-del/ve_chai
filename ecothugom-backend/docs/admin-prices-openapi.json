@@ -1,0 +1,1444 @@
+{
+  "openapi": "3.1.0",
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8080",
+      "description": "Windows local development"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "JSESSIONID"
+      },
+      "csrfToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-CSRF-TOKEN"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "required": [
+          "id",
+          "fullName",
+          "phone",
+          "role",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "email"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "CUSTOMER",
+              "COLLECTOR",
+              "ADMIN"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "LOCKED"
+            ]
+          }
+        }
+      },
+      "Registration": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "fullName",
+          "phone",
+          "password"
+        ],
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "phone": {
+            "type": "string",
+            "pattern": "^0[35789][0-9]{8}$"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 254,
+            "description": "Optional; blank becomes null, trimmed and normalized to lowercase."
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "minLength": 12,
+            "maxLength": 64,
+            "writeOnly": true,
+            "description": "Maximum 72 UTF-8 bytes."
+          }
+        }
+      },
+      "Login": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "identifier",
+          "password"
+        ],
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 254,
+            "description": "Phone or email; trimmed, email is case insensitive."
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "minLength": 1,
+            "maxLength": 64,
+            "writeOnly": true,
+            "description": "Maximum 72 UTF-8 bytes."
+          }
+        }
+      },
+      "Csrf": {
+        "type": "object",
+        "required": [
+          "headerName",
+          "token"
+        ],
+        "properties": {
+          "headerName": {
+            "type": "string",
+            "const": "X-CSRF-TOKEN"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "StatusChange": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "LOCKED"
+            ]
+          }
+        }
+      },
+      "OrderSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "code": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "pickupStart": {
+            "type": "string",
+            "description": "UTC date-time without zone suffix, stored as SQL DATETIME2."
+          },
+          "pickupEnd": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        }
+      },
+      "Problem": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string"
+          }
+        }
+      },
+      "UserPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "page",
+          "size",
+          "totalElements",
+          "totalPages"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "size": {
+            "type": "integer"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer"
+          }
+        }
+      },
+      "OrderPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "page",
+          "size",
+          "totalElements",
+          "totalPages"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderSummary"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "size": {
+            "type": "integer"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer"
+          }
+        }
+      },
+      "CreatePriceDraft": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "materialId": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "unitPrice": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 999999999999999999,
+            "description": "Whole VND per material unit."
+          },
+          "validFrom": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Offset required. UTC year 0001..9999. Stored at millisecond precision (truncate submilliseconds)."
+          },
+          "validTo": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Null/omitted = no end; must be strictly after validFrom after truncation. PUT omission clears the end."
+          }
+        },
+        "required": [
+          "materialId",
+          "unitPrice",
+          "validFrom"
+        ]
+      },
+      "UpdatePriceDraft": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "unitPrice": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 999999999999999999,
+            "description": "Whole VND per material unit."
+          },
+          "validFrom": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Offset required. UTC year 0001..9999. Stored at millisecond precision (truncate submilliseconds)."
+          },
+          "validTo": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Null/omitted = no end; must be strictly after validFrom after truncation. PUT omission clears the end."
+          },
+          "expectedRevision": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "Required snapshot token copied from the currently fetched DRAFT. Prevents editing a newer unseen version."
+          }
+        },
+        "required": [
+          "unitPrice",
+          "validFrom",
+          "expectedRevision"
+        ]
+      },
+      "PriceReview": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expectedRevision": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "Required snapshot token copied from the currently fetched DRAFT."
+          }
+        },
+        "required": [
+          "expectedRevision"
+        ]
+      },
+      "AdminPriceRule": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "materialId": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "materialName": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "KG"
+            ]
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "VND"
+            ]
+          },
+          "unitPrice": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 999999999999999999,
+            "description": "Whole VND per material unit."
+          },
+          "validFrom": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Offset required. UTC year 0001..9999. Stored at millisecond precision (truncate submilliseconds)."
+          },
+          "validTo": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Null/omitted = no end; must be strictly after validFrom after truncation. PUT omission clears the end."
+          },
+          "approvalStatus": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "APPROVED",
+              "REJECTED"
+            ]
+          },
+          "versionNumber": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "createdBy": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Offset required. UTC year 0001..9999. Stored at millisecond precision (truncate submilliseconds)."
+          },
+          "approvedBy": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "minimum": 1
+          },
+          "approvedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Offset required. UTC year 0001..9999. Stored at millisecond precision (truncate submilliseconds)."
+          },
+          "draftRevision": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "SHA-256 snapshot token for this exact persisted price version and status; send it as expectedRevision for edit/approve/reject."
+          }
+        },
+        "required": [
+          "id",
+          "materialId",
+          "materialName",
+          "grade",
+          "unit",
+          "currency",
+          "unitPrice",
+          "validFrom",
+          "validTo",
+          "approvalStatus",
+          "versionNumber",
+          "createdBy",
+          "createdAt",
+          "approvedBy",
+          "approvedAt",
+          "draftRevision"
+        ]
+      },
+      "AdminPricePage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminPriceRule"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 0
+          },
+          "totalPages": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "data",
+          "page",
+          "size",
+          "totalElements",
+          "totalPages"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "EcoThuGom Admin Price Rules API",
+    "version": "1.0.0",
+    "description": "Contract: ../../README.md#doc-ecothugom-backend-docs-admin-prices-md. ADMIN + session; CSRF on writes. DRAFT -> APPROVED/REJECTED, terminal versions immutable. No schema migration. Conditional draft writes use the response draftRevision as required expectedRevision. Does not rewrite previous approved price periods or order/quote/payment snapshots."
+  },
+  "paths": {
+    "/api/auth/csrf": {
+      "get": {
+        "operationId": "getCsrf",
+        "summary": "Get CSRF token; retain session cookie",
+        "description": "",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Csrf"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "operationId": "login",
+        "summary": "Sign in; rotate session ID and invalidate old CSRF",
+        "description": "",
+        "security": [
+          {
+            "csrfToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or unsupported fields",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated or invalid credentials",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing/invalid CSRF token or forbidden role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit; Retry-After contains seconds",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until another attempt may be made."
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "operationId": "currentUser",
+        "summary": "Get current user",
+        "description": "Required role: any authenticated. Authorization uses the current server-side account, not client-supplied identity.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated or invalid credentials",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "operationId": "logout",
+        "summary": "Invalidate session; fetch new CSRF before next login",
+        "description": "",
+        "security": [
+          {
+            "csrfToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Session invalidated"
+          },
+          "403": {
+            "description": "Missing/invalid CSRF token or forbidden role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/price-rules": {
+      "get": {
+        "operationId": "adminListPriceRules",
+        "summary": "List all versions, id DESC",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "in": "query",
+            "name": "materialId",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "approvalStatus",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "APPROVED",
+                "REJECTED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPricePage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid price/time/body/filter. Unknown fields rejected.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sign in required or account locked.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ADMIN required; writes also require valid CSRF.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Price version/material not found (list filters return an empty page).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Only DRAFT can change; version limit, constraint or concurrent lock conflict. Reload before retry.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Persistence failure.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "adminCreatePriceDraft",
+        "summary": "Create DRAFT with next versionNumber per material",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfToken": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPriceRule"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid price/time/body/filter. Unknown fields rejected.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sign in required or account locked.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ADMIN required; writes also require valid CSRF.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Price version/material not found (list filters return an empty page).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Only DRAFT can change; version limit, constraint or concurrent lock conflict. Reload before retry.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Persistence failure.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePriceDraft"
+              },
+              "example": {
+                "materialId": 1,
+                "unitPrice": 3500,
+                "validFrom": "2026-10-23T09:00:00+07:00",
+                "validTo": null
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/price-rules/{id}": {
+      "get": {
+        "operationId": "adminGetPriceRule",
+        "summary": "Read any price version",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPriceRule"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid price/time/body/filter. Unknown fields rejected.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sign in required or account locked.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ADMIN required; writes also require valid CSRF.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Price version/material not found (list filters return an empty page).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Only DRAFT can change; version limit, constraint or concurrent lock conflict. Reload before retry.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Persistence failure.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "adminUpdatePriceDraft",
+        "summary": "Replace DRAFT amount/period only if expectedRevision still matches",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPriceRule"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid price/time/body/filter. Unknown fields rejected.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sign in required or account locked.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ADMIN required; writes also require valid CSRF.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Price version/material not found (list filters return an empty page).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The draft changed since it was read, is no longer DRAFT, or a persistence constraint/lock conflicts. Reload; stale writes make no change.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Persistence failure.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePriceDraft"
+              },
+              "example": {
+                "unitPrice": 3500,
+                "validFrom": "2026-10-23T09:00:00+07:00",
+                "validTo": null,
+                "expectedRevision": "0000000000000000000000000000000000000000000000000000000000000000"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/price-rules/{id}/approve": {
+      "post": {
+        "operationId": "adminApprovePriceDraft",
+        "summary": "Approve DRAFT only if expectedRevision still matches; terminal state cannot be reviewed again",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPriceRule"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid price/time/body/filter. Unknown fields rejected.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sign in required or account locked.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ADMIN required; writes also require valid CSRF.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Price version/material not found (list filters return an empty page).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The draft changed since it was read, is no longer DRAFT, or a persistence constraint/lock conflicts. Reload; stale writes make no change.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Persistence failure.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PriceReview"
+              },
+              "example": {
+                "expectedRevision": "0000000000000000000000000000000000000000000000000000000000000000"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/price-rules/{id}/reject": {
+      "post": {
+        "operationId": "adminRejectPriceDraft",
+        "summary": "Reject DRAFT only if expectedRevision still matches; terminal state cannot be reviewed again",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPriceRule"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid price/time/body/filter. Unknown fields rejected.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sign in required or account locked.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ADMIN required; writes also require valid CSRF.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Price version/material not found (list filters return an empty page).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The draft changed since it was read, is no longer DRAFT, or a persistence constraint/lock conflicts. Reload; stale writes make no change.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Persistence failure.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PriceReview"
+              },
+              "example": {
+                "expectedRevision": "0000000000000000000000000000000000000000000000000000000000000000"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/materials/{id}/price-rules": {
+      "get": {
+        "operationId": "adminMaterialPriceHistory",
+        "summary": "All states, versionNumber DESC; existing material with no versions returns []",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminPricePage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid price/time/body/filter. Unknown fields rejected.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sign in required or account locked.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "ADMIN required; writes also require valid CSRF.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Price version/material not found (list filters return an empty page).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Only DRAFT can change; version limit, constraint or concurrent lock conflict. Reload before retry.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Persistence failure.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

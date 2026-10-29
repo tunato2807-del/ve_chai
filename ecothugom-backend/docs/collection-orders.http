@@ -1,0 +1,40 @@
+@baseUrl = http://127.0.0.1:8080
+@orderId = 0
+# Chọn materialId từ GET /api/materials và sửa ngày hẹn thành tương lai trước khi gửi.
+@materialId = 1
+@pickupStart = 2026-10-25T09:00:00+07:00
+@pickupEnd = 2026-10-25T10:00:00+07:00
+
+### Đăng nhập CUSTOMER theo auth-api.http trước; giữ cùng cookie JSESSIONID.
+# @name bookingCsrf
+GET {{baseUrl}}/api/auth/csrf
+
+### Tạo lịch
+# @name createdOrder
+POST {{baseUrl}}/api/customer/orders
+Content-Type: application/json
+X-CSRF-TOKEN: {{bookingCsrf.response.body.$.token}}
+
+{
+  "pickupAddress": {
+    "contactName": "Khách hàng thử",
+    "contactPhone": "0934567890",
+    "addressLine": "12 Đường mô phỏng",
+    "ward": "Phường thử",
+    "district": null,
+    "province": "TP Hồ Chí Minh"
+  },
+  "pickupStart": "{{pickupStart}}",
+  "pickupEnd": "{{pickupEnd}}",
+  "sellerNote": "Gọi trước khi đến",
+  "items": [{"materialId": {{materialId}}, "estimatedQty": 10.5, "note": "Giấy đã gom riêng"}]
+}
+
+### Đọc lại đơn vừa tạo
+GET {{baseUrl}}/api/customer/orders/{{createdOrder.response.body.$.id}}
+
+### Danh sách đơn của khách đang đăng nhập
+GET {{baseUrl}}/api/customer/orders?page=0&size=20
+
+### 404 nếu đơn không thuộc khách hiện tại hoặc không tồn tại
+GET {{baseUrl}}/api/customer/orders/{{orderId}}

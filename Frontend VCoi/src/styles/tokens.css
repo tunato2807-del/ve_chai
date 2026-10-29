@@ -1,0 +1,233 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Be Vietnam Pro', sans-serif;
+  --color-brand: #173f32;
+  --color-action: #d5ed82;
+}
+
+:root {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  color: var(--ink);
+  background: var(--canvas);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --canvas: #f8f9f3;
+  --surface: #fff;
+  --surface-soft: #eef2e8;
+  --ink: #173f32;
+  --muted: #59695e;
+  --line: #dce3d7;
+  --accent: #4b702f;
+  --action: #d5ed82;
+  --action-ink: #213b26;
+  --focus: #4b702f;
+  --hero-ink: #fff;
+  color-scheme: light dark;
+}
+
+:root[data-theme='dark'] {
+  --canvas: #12231e;
+  --surface: #1a3028;
+  --surface-soft: #20382e;
+  --ink: #edf4eb;
+  --muted: #b4c5b8;
+  --line: #3c5346;
+  --accent: #d5ed82;
+  --focus: #d5ed82;
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  min-width: 320px;
+}
+button,
+input,
+select {
+  font: inherit;
+}
+button,
+a,
+input,
+select,
+summary {
+  -webkit-tap-highlight-color: transparent;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button,
+summary,
+select {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+img {
+  display: block;
+  max-width: 100%;
+}
+svg {
+  flex-shrink: 0;
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+h1,
+h2,
+h3 {
+  font-weight: 600;
+}
+h2 {
+  font-size: clamp(2rem, 3.4vw, 3.3rem);
+  line-height: 1.18;
+  letter-spacing: -0.055em;
+}
+h3 {
+  font-size: 1.25rem;
+  line-height: 1.35;
+  letter-spacing: -0.035em;
+}
+p {
+  line-height: 1.8;
+}
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 5px;
+  border-radius: 3px;
+}
+main:focus {
+  outline: none;
+}
+[id] {
+  scroll-margin-top: 100px;
+}
+::selection {
+  background: var(--action);
+  color: var(--action-ink);
+}
+.muted {
+  color: var(--muted);
+}
+.text-accent {
+  color: var(--accent);
+}
+.container {
+  width: min(1280px, calc(100% - 96px));
+  margin-inline: auto;
+}
+.section-space {
+  padding-block: 100px;
+}
+.section-description {
+  color: var(--muted);
+  max-width: 450px;
+  margin-top: 22px;
+}
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  min-height: 52px;
+  padding: 14px 23px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.button-primary {
+  background: var(--action);
+  color: var(--action-ink);
+}
+.button-primary:hover {
+  background: #c4df6b;
+}
+.button-secondary {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+.button-secondary:hover {
+  background: var(--surface-soft);
+}
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-underline-offset: 6px;
+}
+.text-link:hover {
+  text-decoration: underline;
+}
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: var(--surface);
+  border-radius: 5px;
+}
+.skip-link {
+  position: fixed;
+  top: 10px;
+  left: 12px;
+  padding: 15px 20px;
+  background: var(--surface);
+  z-index: 30;
+  transform: translateY(-150%);
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+  a,
+  button,
+  summary {
+    transition:
+      color 0.18s,
+      background-color 0.18s;
+  }
+}
+@media (max-width: 1023px) {
+  .container {
+    width: calc(100% - 56px);
+  }
+  .section-space {
+    padding-block: 72px;
+  }
+}
+@media (max-width: 639px) {
+  .container {
+    width: calc(100% - 36px);
+  }
+  .section-space {
+    padding-block: 54px;
+  }
+  h2 {
+    font-size: 2.05rem;
+  }
+  .button {
+    gap: 14px;
+    padding-inline: 18px;
+  }
+}

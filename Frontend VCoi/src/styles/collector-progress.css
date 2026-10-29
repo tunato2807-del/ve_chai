@@ -1,0 +1,128 @@
+.trip-panel {
+  padding: 28px;
+  margin-bottom: 28px;
+}
+.trip-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.trip-heading .role-label {
+  margin-bottom: 6px;
+}
+.trip-heading h2 {
+  font-size: 1.35rem;
+  letter-spacing: -0.035em;
+}
+.trip-symbol {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  background: var(--surface-soft);
+  color: var(--accent);
+}
+.trip-track {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+  padding: 24px 0;
+  margin: 24px 0;
+  border-block: 1px solid var(--line);
+}
+.trip-track li {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 0.75rem;
+  line-height: 1.7;
+  color: var(--muted);
+  padding-right: 16px;
+}
+.trip-marker {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-size: 0.75rem;
+}
+.trip-track .is-reached {
+  color: var(--ink);
+}
+.trip-track .is-reached .trip-marker {
+  background: var(--action);
+  color: var(--action-ink);
+  border-color: var(--action);
+}
+.trip-track [aria-current='step'] {
+  font-weight: 600;
+}
+.trip-content {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 40px;
+}
+.trip-content > div {
+  min-width: 0;
+}
+.trip-explanation h3 {
+  font-size: 1.1rem;
+}
+.trip-explanation p {
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin-top: 14px;
+}
+.trip-form {
+  margin-top: 20px;
+}
+.trip-form:first-child {
+  margin-top: 0;
+}
+.trip-form textarea {
+  min-height: 86px;
+}
+.trip-form .button {
+  justify-self: start;
+  max-width: 100%;
+}
+.trip-content .form-notice,
+.trip-content .form-error {
+  margin-top: 0;
+}
+.trip-content .form-error p + p {
+  margin-top: 10px;
+}
+@media (max-width: 767px) {
+  .trip-panel {
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+  .trip-track {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding-block: 20px;
+    margin-block: 22px;
+  }
+  .trip-content {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .trip-heading h2 {
+    font-size: 1.2rem;
+  }
+  .trip-symbol {
+    width: 44px;
+    height: 44px;
+  }
+  .trip-form .button {
+    white-space: normal;
+    text-align: left;
+  }
+}

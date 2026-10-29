@@ -1,0 +1,14 @@
+# Use this workspace to collaborate
+workspace:
+  id: 953f9e6c-03fa-407f-afa2-f3968efc2c29
+
+localResources:
+  specs:
+    - ../docs/auth-openapi.json
+    - ../docs/collection-orders-openapi.json
+    - ../docs/dispatch-orders-openapi.json
+    - ../docs/collection-workflow-openapi.json
+    - ../docs/simulated-payments-openapi.json
+    - ../docs/admin-catalog-openapi.json
+    - ../docs/admin-prices-openapi.json
+    - ../docs/backend-completion-openapi.json

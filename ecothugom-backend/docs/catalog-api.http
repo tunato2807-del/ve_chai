@@ -1,0 +1,29 @@
+@baseUrl = http://127.0.0.1:8080
+
+### Nhóm vật liệu đang hoạt động
+GET {{baseUrl}}/api/material-categories?page=0&size=20
+Accept: application/json
+
+### Vật liệu được thu mua
+GET {{baseUrl}}/api/materials?page=0&size=20
+Accept: application/json
+
+### Lọc vật liệu theo nhóm
+GET {{baseUrl}}/api/materials?categoryId=1&page=0&size=10
+Accept: application/json
+
+### Tham số không hợp lệ: HTTP 400
+GET {{baseUrl}}/api/materials?size=101
+Accept: application/problem+json
+
+### Bảng giá hiện hành (giá chưa có trả CONTACT_FOR_QUOTE)
+GET {{baseUrl}}/api/prices/current?page=0&size=20
+Accept: application/json
+
+### Giá hiện hành của một loại/phân hạng vật liệu
+GET {{baseUrl}}/api/prices/current?materialId=1
+Accept: application/json
+
+### Bảng giá theo nhóm vật liệu
+GET {{baseUrl}}/api/prices/current?categoryId=1&page=0&size=10
+Accept: application/json

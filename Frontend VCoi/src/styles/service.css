@@ -1,0 +1,140 @@
+.service-shell {
+  min-height: 100dvh;
+  background: var(--canvas);
+}
+.service-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+  min-height: 76px;
+  padding: 16px 32px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.service-brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 15px;
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: -1px;
+}
+.service-brand span {
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+.service-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.service-topbar .account-navigation {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+.service-topbar .button,
+.service-topbar .nav-logout {
+  min-height: 42px;
+  padding: 10px 14px;
+  gap: 10px;
+  font-size: 12px;
+}
+.service-topbar .nav-logout {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--ink);
+}
+.service-navigation {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 14px 32px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  font-size: 12px;
+}
+.service-navigation a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  border-bottom: 2px solid transparent;
+}
+.service-navigation a[aria-current='page'] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.service-navigation > span {
+  color: var(--muted);
+  margin-left: auto;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 767px) {
+  .service-topbar {
+    gap: 14px;
+    padding: 16px 20px;
+  }
+  .service-brand {
+    font-size: 24px;
+  }
+  .service-topbar-actions {
+    gap: 10px;
+  }
+  .service-navigation {
+    padding: 10px 20px;
+    gap: 10px 20px;
+  }
+  .service-navigation > span {
+    display: none;
+  }
+}
+
+.service-brand {
+  align-items: center;
+  gap: 9px;
+}
+.service-brand > svg {
+  color: var(--accent);
+}
+.service-brand > span {
+  border-left: 1px solid var(--line);
+  margin-left: 8px;
+  padding-left: 16px;
+}
+.service-topbar {
+  padding-inline: max(24px, calc((100vw - 1280px) / 2));
+}
+.service-navigation {
+  padding-inline: max(24px, calc((100vw - 1280px) / 2));
+  gap: 30px;
+  background: var(--surface);
+}
+.service-navigation a {
+  padding-inline: 4px;
+  font-weight: 500;
+}
+.service-navigation > span {
+  padding: 8px 14px;
+  background: var(--surface-soft);
+  border-radius: 6px;
+  font-size: 0.72rem;
+}
+@media (max-width: 767px) {
+  .service-topbar,
+  .service-navigation {
+    padding-inline: 20px;
+  }
+  .service-brand > span {
+    font-size: 11px;
+    padding-left: 10px;
+    margin-left: 3px;
+  }
+  .service-navigation {
+    gap: 16px;
+  }
+}

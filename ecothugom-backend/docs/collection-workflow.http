@@ -1,0 +1,71 @@
+@baseUrl = http://127.0.0.1:8080
+@orderId = 1
+@itemId = 1
+@quoteId = 1
+@weighingId = 1
+@csrf = PASTE_CURRENT_SESSION_CSRF_TOKEN
+
+### Login with relevant account first (auth-api.http), then fetch fresh token.
+GET {{baseUrl}}/api/auth/csrf
+
+### COLLECTOR: actual order/item IDs and current version
+GET {{baseUrl}}/api/collector/orders/{{orderId}}
+
+### ASSIGNED/version 2 -> EN_ROUTE/version 3
+POST {{baseUrl}}/api/collector/orders/{{orderId}}/start-trip
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrf}}
+
+{"version":2,"reason":"Bắt đầu di chuyển"}
+
+### EN_ROUTE/version 3 -> ARRIVED/version 4
+POST {{baseUrl}}/api/collector/orders/{{orderId}}/arrive
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrf}}
+
+{"version":3}
+
+### First weighing: order version 4 -> 5; actual itemId from order detail
+POST {{baseUrl}}/api/collector/orders/{{orderId}}/weighings
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrf}}
+
+{"version":4,"items":[{"itemId":{{itemId}},"grossWeight":5.25,"tareWeight":0.25}]}
+
+### Weighing history; latest record for each item has greatest id
+GET {{baseUrl}}/api/collector/orders/{{orderId}}/weighings
+
+### OPTIONAL correction BEFORE sending quote: version 5 -> 6
+# If run, use version 6 instead of 5 below and follow returned versions thereafter.
+POST {{baseUrl}}/api/collector/orders/{{orderId}}/weighings
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrf}}
+
+{"version":5,"items":[{"itemId":{{itemId}},"grossWeight":6.25,"tareWeight":0.25,"correctionOf":{{weighingId}},"correctionReason":"Cân lại cùng khách"}]}
+
+### Send quote (assumes no optional correction): version 5 -> 6
+POST {{baseUrl}}/api/collector/orders/{{orderId}}/quotes
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrf}}
+
+{"version":5}
+
+### CUSTOMER: log in as owner; fetch fresh CSRF after switching account
+GET {{baseUrl}}/api/customer/orders/{{orderId}}/quotes
+
+### Choose accept OR reject; actual quoteId and version from GET
+POST {{baseUrl}}/api/customer/orders/{{orderId}}/quotes/{{quoteId}}/accept
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrf}}
+
+{"version":6,"quoteVersion":0,"responseNote":"Đồng ý kết quả cân và báo giá"}
+
+### Alternative reject -> ARRIVED/version 7; collector may correct/requote
+POST {{baseUrl}}/api/customer/orders/{{orderId}}/quotes/{{quoteId}}/reject
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrf}}
+
+{"version":6,"quoteVersion":0,"responseNote":"Đề nghị cân lại"}
+
+### ADMIN read-only oversight (log in as ADMIN)
+GET {{baseUrl}}/api/admin/orders/{{orderId}}/quotes

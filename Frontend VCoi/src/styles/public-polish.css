@@ -1,0 +1,226 @@
+/* Public-page finishing layer: route states, motion, and editorial footer. */
+.public-shell .navigation > a[aria-current='page'] {
+  text-decoration: none;
+}
+.public-shell .navigation > a[aria-current] {
+  color: var(--accent);
+}
+.public-shell .navigation > a::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.public-shell .navigation > a[aria-current]::after,
+.public-shell .navigation > a:hover::after {
+  transform: scaleX(1);
+}
+
+.public-shell .header-actions .account-navigation {
+  gap: 10px;
+}
+.public-shell .header-actions .nav-logout,
+.public-shell .mobile-account .nav-logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.public-shell .header-actions .nav-logout:hover,
+.public-shell .mobile-account .nav-logout:hover {
+  border-color: var(--accent);
+  background: var(--surface-soft);
+  color: var(--accent);
+}
+.public-shell .header-actions .nav-logout:focus-visible,
+.public-shell .mobile-account .nav-logout:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.public-shell .site-footer {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-soft);
+}
+.public-shell .site-footer::before {
+  content: '';
+  position: absolute;
+  top: -250px;
+  right: max(-210px, calc((100vw - 1240px) / 2));
+  width: 430px;
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.public-shell .footer-top {
+  position: relative;
+  grid-template-columns: minmax(0, 1.3fr) minmax(150px, 0.7fr) minmax(230px, 0.9fr);
+  align-items: start;
+  gap: clamp(2rem, 5vw, 5rem);
+  padding-block: clamp(3.5rem, 7vw, 6.25rem);
+}
+.public-shell .footer-brand-block .brand {
+  font-size: 2rem;
+}
+.public-shell .footer-manifesto {
+  margin-top: 2rem;
+  font-size: clamp(2rem, 3.4vw, 3.2rem);
+  line-height: 1.16;
+  letter-spacing: -0.065em;
+  font-weight: 500;
+}
+.public-shell .footer-manifesto span {
+  color: var(--accent);
+}
+.public-shell .footer-signoff {
+  max-width: 31ch;
+  margin-top: 1.25rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.8;
+}
+.public-shell .footer-nav {
+  gap: 0.4rem;
+}
+.public-shell .footer-label {
+  margin-bottom: 0.85rem;
+  color: var(--accent);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+}
+.public-shell .footer-nav a {
+  min-height: 42px;
+  gap: 0.6rem;
+  border-bottom: 1px solid transparent;
+  font-size: 0.86rem;
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+.public-shell .footer-nav a:hover {
+  border-color: var(--line);
+  color: var(--accent);
+  text-decoration: none;
+  transform: translateX(4px);
+}
+.public-shell .footer-project {
+  max-width: 360px;
+  padding-left: clamp(1.25rem, 2.2vw, 2rem);
+  border-left: 1px solid var(--line);
+}
+.public-shell .footer-project-title {
+  max-width: 20ch;
+  margin-top: 0.25rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: -0.035em;
+}
+.public-shell .footer-project p:not(.footer-project-title) {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.85;
+}
+.public-shell .footer-project .muted {
+  margin-top: 0.85rem;
+}
+.public-shell .footer-bottom {
+  position: relative;
+  align-items: center;
+  padding-block: 1.25rem;
+  border-color: var(--line);
+}
+.public-shell .footer-cycle-note,
+.public-shell .footer-top-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.public-shell .footer-cycle-note svg {
+  color: var(--accent);
+}
+.public-shell .footer-top-link:hover {
+  color: var(--accent);
+}
+.public-shell .footer-top-link svg {
+  transition: transform 180ms ease;
+}
+.public-shell .footer-top-link:hover svg {
+  transform: translateY(-3px);
+}
+
+@media (max-width: 767px) {
+  .public-shell .footer-top {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    gap: 2.75rem 2rem;
+  }
+  .public-shell .footer-project {
+    grid-column: 1 / -1;
+    max-width: 520px;
+    padding-left: 1.25rem;
+  }
+  .public-shell .footer-manifesto {
+    margin-top: 1.5rem;
+  }
+}
+@media (max-width: 479px) {
+  .public-shell .footer-top {
+    grid-template-columns: 1fr;
+    gap: 2.25rem;
+  }
+  .public-shell .footer-project {
+    grid-column: auto;
+  }
+  .public-shell .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html.theme-transitioning,
+  html.theme-transitioning body,
+  html.theme-transitioning #root,
+  html.theme-transitioning #root :where(*) {
+    transition-property: color, background-color, border-color, box-shadow, fill, stroke;
+    transition-duration: 420ms;
+    transition-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .theme-transitioning .theme-toggle-symbol {
+    animation: vcoi-theme-icon-in 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  @keyframes vcoi-theme-icon-in {
+    from {
+      opacity: 0.25;
+      transform: rotate(-75deg) scale(0.65);
+    }
+    to {
+      opacity: 1;
+      transform: rotate(0) scale(1);
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .public-shell .navigation > a::after,
+  .public-shell .footer-nav a,
+  .public-shell .footer-top-link svg {
+    transition: none;
+  }
+}

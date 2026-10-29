@@ -1,0 +1,100 @@
+.change-table {
+  min-width: 800px;
+}
+.change-table tbody th {
+  min-width: 170px;
+}
+.change-table td:nth-child(2) {
+  min-width: 150px;
+}
+.change-table .text-button {
+  min-height: 44px;
+  font-size: 12px;
+}
+.change-table-reason {
+  max-width: 300px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.change-panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+.change-panel-heading > div {
+  min-width: 0;
+}
+.change-panel-heading .catalog-state {
+  flex-shrink: 0;
+  font-size: 12px;
+}
+.change-detail-reason {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.change-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  padding-block: 24px;
+  margin-block: 24px;
+  border-block: 1px solid var(--line);
+}
+.change-detail-grid dt {
+  color: var(--muted);
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+.change-detail-grid dd {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.change-detail-grid small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 8px;
+}
+.change-detail .form-notice {
+  margin-bottom: 24px;
+}
+.change-proposed {
+  border-left: 3px solid var(--accent);
+  padding-left: 16px;
+}
+.change-slot-summary {
+  padding: 16px;
+  border: 1px solid var(--line);
+  margin-block: 20px;
+  font-size: 13px;
+}
+.change-slot-summary strong {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.change-slot-summary p {
+  margin-top: 8px;
+}
+.change-result-note {
+  white-space: pre-wrap;
+}
+.change-detail h2,
+.change-decision h2,
+.change-result h2,
+.change-result p {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 767px) {
+  .change-panel-heading {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .change-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}

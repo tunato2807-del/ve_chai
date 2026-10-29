@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f6f0" />
+    <script>
+      ;(() => {
+        let choice
+        try {
+          choice = localStorage.getItem('vcoi.theme')
+        } catch {
+          /* Storage is optional. */
+        }
+        const mode = ['light', 'dark'].includes(choice)
+          ? choice
+          : matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light'
+        document.documentElement.dataset.theme = mode
+        document.documentElement.style.colorScheme = mode
+      })()
+    </script>
+    <meta
+      name="description"
+      content="VCoi giúp bạn tìm hiểu vật liệu được thu mua, xem bảng giá hiện hành và quy trình thu gom phế liệu tại nhà."
+    />
+    <title>VCoi | Thu gom hôm nay, xanh hơn ngày mai</title>
+    <link
+      rel="preload"
+      as="image"
+      href="/recycling-yard.webp"
+      imagesrcset="/recycling-yard-640.webp 640w, /recycling-yard-960.webp 960w, /recycling-yard.webp 1672w"
+      imagesizes="(max-width: 767px) 800px, 1100px"
+      fetchpriority="high"
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

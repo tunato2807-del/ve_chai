@@ -1,0 +1,36 @@
+@baseUrl = http://127.0.0.1:8080
+@orderId = 1
+@quoteId = 21
+@orderVersion = 7
+# Generate ONE new GUID for your own operation. Keep it when investigating a lost response.
+# PowerShell: [guid]::NewGuid().ToString()
+@requestKey = 5feebfac-a549-41ad-ab35-e8d14e291e03
+@csrf = PASTE_CURRENT_SESSION_TOKEN
+
+### Log in as the assigned COLLECTOR using auth-api.http, then fetch a new CSRF token.
+GET {{baseUrl}}/api/auth/csrf
+
+### Read actual version (must be AWAITING_PAYMENT)
+GET {{baseUrl}}/api/collector/orders/{{orderId}}
+
+### Select current ACCEPTED quote; use its id, not versionNumber
+GET {{baseUrl}}/api/collector/orders/{{orderId}}/quotes
+
+### Simulated cash payment. No amount/status/actor/timestamps in request.
+POST {{baseUrl}}/api/collector/orders/{{orderId}}/payments/simulate
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrf}}
+
+{"version":{{orderVersion}},"quoteId":{{quoteId}},"method":"CASH_SIMULATED","requestKey":"{{requestKey}}"}
+
+### Result: COMPLETED, paidAt/completedAt, amount from accepted quote
+GET {{baseUrl}}/api/collector/orders/{{orderId}}/payments
+
+### Log in as order owner before using CUSTOMER route
+GET {{baseUrl}}/api/customer/orders/{{orderId}}/payments
+
+### Log in as ADMIN before using ADMIN route
+GET {{baseUrl}}/api/admin/orders/{{orderId}}/payments
+
+### Alternative on a DIFFERENT eligible order: method TRANSFER_SIMULATED.
+# Re-sending for the already completed order always returns 409, including with a new key.

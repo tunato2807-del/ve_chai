@@ -1,0 +1,269 @@
+.weighing-panel {
+  padding: 28px;
+  margin-bottom: 28px;
+}
+.weighing-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.weighing-heading h2 {
+  font-size: 1.35rem;
+  letter-spacing: -0.035em;
+}
+.weighing-heading .role-label {
+  margin-bottom: 6px;
+}
+.weighing-heading .text-button {
+  margin-left: auto;
+  text-align: right;
+}
+.weighing-intro {
+  color: var(--muted);
+  font-size: 0.82rem;
+  max-width: 760px;
+  margin-block: 22px 28px;
+}
+.weighing-form-fields {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  display: grid;
+  gap: 22px;
+}
+.weighing-row {
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 20px;
+}
+.weighing-row.is-selected {
+  border-color: var(--accent);
+}
+.weighing-row legend {
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding-inline: 8px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.weighing-row-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.weighing-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  cursor: pointer;
+}
+.weighing-select input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+.weighing-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 0.8fr;
+  align-items: start;
+  gap: 20px;
+  margin-block: 18px;
+}
+.weighing-net {
+  padding: 18px;
+  border-radius: 8px;
+  background: var(--surface-soft);
+  display: grid;
+  gap: 7px;
+}
+.weighing-net span,
+.weighing-net small {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+.weighing-net output {
+  font-weight: 600;
+  font-size: 1.15rem;
+  overflow-wrap: anywhere;
+}
+.weighing-save {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding-block: 24px;
+}
+.weighing-save .button {
+  white-space: normal;
+}
+.weighing-empty {
+  padding: 20px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 0.8rem;
+  border-radius: 8px;
+}
+.weighing-history {
+  border-top: 1px solid var(--line);
+  padding-top: 26px;
+}
+.weighing-saved-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.weighing-saved-heading h3 {
+  font-size: 1.1rem;
+}
+.weighing-saved-heading p {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.weighing-saved-list {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0;
+  display: grid;
+  gap: 16px;
+}
+.weighing-saved-list li {
+  padding: 18px;
+  background: var(--surface-soft);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+.weighing-saved-list dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 0;
+}
+.weighing-saved-list dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+.weighing-saved-list dd {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+.weighing-audit summary {
+  font-size: 0.82rem;
+  min-height: 44px;
+  padding-block: 12px;
+  font-weight: 500;
+}
+.weighing-photo-form,
+.weighing-photo-hint {
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.weighing-photo-form fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  display: grid;
+  gap: 12px;
+}
+.weighing-photo-form legend {
+  font-weight: 600;
+  padding: 0 0 12px;
+}
+.weighing-photo-form input[type='file'] {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.8rem;
+}
+.weighing-photo-form input::file-selector-button {
+  padding: 8px 12px;
+  margin-right: 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--ink);
+  background: var(--surface-soft);
+  cursor: pointer;
+}
+.weighing-photo-form .button {
+  justify-self: start;
+  max-width: 100%;
+}
+.weighing-audit ol {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+}
+.weighing-audit li {
+  border-top: 1px solid var(--line);
+  padding-block: 18px;
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+.weighing-audit li > div {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.weighing-audit li span,
+.weighing-audit li p {
+  color: var(--muted);
+}
+@media (max-width: 767px) {
+  .weighing-panel {
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+  .weighing-heading {
+    flex-wrap: wrap;
+  }
+  .weighing-heading .text-button {
+    margin-left: 0;
+    text-align: left;
+  }
+  .weighing-inputs {
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 14px;
+  }
+  .weighing-net {
+    grid-column: 1/-1;
+  }
+  .weighing-row {
+    padding: 16px;
+  }
+  .weighing-saved-list dl {
+    gap: 12px;
+  }
+  .weighing-saved-list dd {
+    font-size: 0.76rem;
+  }
+}
+@media (max-width: 399px) {
+  .weighing-inputs {
+    grid-template-columns: 1fr;
+  }
+  .weighing-saved-list dl {
+    grid-template-columns: 1fr;
+  }
+}

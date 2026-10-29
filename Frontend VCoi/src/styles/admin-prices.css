@@ -1,0 +1,128 @@
+.price-filters .form-field:first-child {
+  min-width: 220px;
+  max-width: 340px;
+}
+.admin-shell .price-table {
+  min-width: 820px;
+}
+.admin-shell .price-table tbody th {
+  min-width: 180px;
+}
+.admin-shell .price-table td:nth-child(3) {
+  min-width: 240px;
+}
+.admin-shell .price-table .price-amount {
+  white-space: nowrap;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.price-history-link {
+  display: inline-block;
+  min-height: 36px;
+  margin-top: 6px;
+  font-size: 11px;
+}
+.price-state-approved {
+  color: var(--accent);
+  background: var(--admin-selected);
+}
+.price-state-draft {
+  color: var(--ink);
+  border-style: dashed;
+}
+.price-detail-heading {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.price-detail-heading .catalog-state {
+  flex-shrink: 0;
+  font-size: 12px;
+}
+.price-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin: 28px 0;
+  padding-block: 24px;
+  border-block: 1px solid var(--line);
+}
+.price-detail-grid dt {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.price-detail-grid dd {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.price-detail-grid small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.price-detail-grid .price-detail-amount {
+  font-size: 24px;
+  letter-spacing: -0.045em;
+  font-weight: 600;
+}
+.price-detail-amount small {
+  display: inline;
+  font-weight: 400;
+  letter-spacing: 0;
+  margin-left: 6px;
+}
+.price-history-note {
+  padding: 0 24px 24px;
+  font-size: 12px;
+  color: var(--muted);
+  max-width: 880px;
+}
+.price-rules-note {
+  margin-top: 28px;
+  max-width: 900px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.price-rules-note summary {
+  min-height: 44px;
+  cursor: pointer;
+  padding-block: 12px;
+  color: var(--ink);
+}
+.price-rules-note p {
+  margin-block: 8px 20px;
+}
+.price-no-materials {
+  padding: 20px 0;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+.price-no-materials p {
+  margin-bottom: 12px;
+}
+@media (max-width: 1023px) {
+  .price-detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 767px) {
+  .price-detail-heading {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .price-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .price-filters .form-field:first-child {
+    min-width: 0;
+    max-width: none;
+  }
+  .price-filters {
+    flex-direction: column;
+  }
+}

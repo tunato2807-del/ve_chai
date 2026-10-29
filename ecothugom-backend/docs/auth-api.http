@@ -1,0 +1,69 @@
+@baseUrl = http://127.0.0.1:8080
+# Điền giá trị cục bộ khi chạy; không commit mật khẩu thực tế.
+@identifier = <phone-or-email>
+@password = <enter-locally>
+
+### 1. CSRF; giữ cookie JSESSIONID trong HTTP client
+# @name csrf
+GET {{baseUrl}}/api/auth/csrf
+
+### 2. Đăng ký khách hàng; không tự đăng nhập
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrf.response.body.$.token}}
+
+{
+  "fullName": "Khách hàng đồ án",
+  "phone": "<new-vietnamese-phone>",
+  "email": null,
+  "password": "{{password}}"
+}
+
+### 3. Đăng nhập
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrf.response.body.$.token}}
+
+{
+  "identifier": "{{identifier}}",
+  "password": "{{password}}"
+}
+
+### 4. Token mới sau login
+# @name signedInCsrf
+GET {{baseUrl}}/api/auth/csrf
+
+### Thông tin phiên
+GET {{baseUrl}}/api/auth/me
+
+### CUSTOMER
+GET {{baseUrl}}/api/customer/orders?page=0&size=20
+
+### COLLECTOR
+GET {{baseUrl}}/api/collector/orders?page=0&size=20
+
+### ADMIN
+GET {{baseUrl}}/api/admin/users?page=0&size=20
+
+### ADMIN tạo nhân viên
+POST {{baseUrl}}/api/admin/collectors
+Content-Type: application/json
+X-CSRF-TOKEN: {{signedInCsrf.response.body.$.token}}
+
+{
+  "fullName": "Nhân viên thu gom",
+  "phone": "<new-vietnamese-phone>",
+  "email": null,
+  "password": "{{password}}"
+}
+
+### ADMIN khóa tài khoản không phải ADMIN; thay 0 bằng ID thực tế
+PATCH {{baseUrl}}/api/admin/users/0/status
+Content-Type: application/json
+X-CSRF-TOKEN: {{signedInCsrf.response.body.$.token}}
+
+{ "status": "LOCKED" }
+
+### Đăng xuất
+POST {{baseUrl}}/api/auth/logout
+X-CSRF-TOKEN: {{signedInCsrf.response.body.$.token}}

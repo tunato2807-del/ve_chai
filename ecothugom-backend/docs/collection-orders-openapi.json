@@ -1,0 +1,613 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "EcoThuGom Customer Collection Orders",
+    "version": "1.0.0",
+    "description": "Authoritative contract for booking and reading a collection order. Sign in as CUSTOMER using auth-openapi.json first. Retain JSESSIONID; fetch a fresh CSRF token after login. Server assigns owner, code, status and price estimates. Each successful POST creates a new order; idempotency keys are not supported."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8080"
+    }
+  ],
+  "paths": {
+    "/api/customer/orders": {
+      "post": {
+        "operationId": "createCollectionOrder",
+        "summary": "Book a collection as the signed-in customer",
+        "description": "Creates PENDING order, contact/address snapshots, item estimates and initial status log in one transaction. Address is supplied inline; no saved address is created. Use material IDs from GET /api/materials. Pickup start must be in the future. Estimates use current approved server prices at booking, not final purchase prices.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrder"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Booked successfully",
+            "headers": {
+              "Location": {
+                "description": "Relative URL of the created order",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidInput"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/PersistenceFailure"
+          }
+        }
+      }
+    },
+    "/api/customer/orders/{id}": {
+      "get": {
+        "operationId": "getCustomerCollectionOrder",
+        "summary": "Read an order owned by the signed-in customer",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Owned order with saved price estimates; timestamps in UTC",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidInput"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "Order not found or owned by a different customer",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/PersistenceFailure"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "JSESSIONID"
+      },
+      "csrfToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-CSRF-TOKEN",
+        "description": "GET /api/auth/csrf in the same cookie session; use token from its response. Login/logout invalidate the old token."
+      }
+    },
+    "responses": {
+      "InvalidInput": {
+        "description": "Malformed JSON, unsupported fields, invalid address/time/items, unavailable materials or numeric overflow",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "Unauthenticated": {
+        "description": "Missing/expired session or locked account. POST with missing/invalid CSRF may return 403 before authentication is checked.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Missing/invalid CSRF or non-CUSTOMER role (including ADMIN)",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "PersistenceFailure": {
+        "description": "Database operation failed; transaction is rolled back",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "CreateOrder": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "pickupStart",
+          "pickupEnd",
+          "items"
+        ],
+        "properties": {
+          "pickupAddress": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PickupAddress"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pickupStart": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Required offset; future instant, SQL UTC year 1-9999. Sub-millisecond precision is truncated.",
+            "examples": [
+              "2026-10-25T09:00:00+07:00"
+            ]
+          },
+          "pickupEnd": {
+            "type": "string",
+            "format": "date-time",
+            "description": "After pickupStart, compared after normalization to UTC milliseconds",
+            "examples": [
+              "2026-10-25T10:00:00+07:00"
+            ]
+          },
+          "sellerNote": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1000
+          },
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 50,
+            "description": "Material IDs must be distinct. Unknown quantity is allowed.",
+            "items": {
+              "$ref": "#/components/schemas/CreateItem"
+            }
+          },
+          "addressId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "pickupAddress"
+            ],
+            "properties": {
+              "pickupAddress": {
+                "$ref": "#/components/schemas/PickupAddress"
+              },
+              "addressId": {
+                "type": "null"
+              }
+            }
+          },
+          {
+            "required": [
+              "addressId"
+            ],
+            "properties": {
+              "addressId": {
+                "type": "integer",
+                "format": "int64",
+                "minimum": 1
+              },
+              "pickupAddress": {
+                "type": "null"
+              }
+            }
+          }
+        ],
+        "description": "Select exactly one non-null pickupAddress or customer-owned addressId. Source is snapshotted; later address edits/deletion do not change historical contact/address."
+      },
+      "PickupAddress": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Required text is trimmed and must not be blank. Full comma-separated address must fit 600 characters. Stored as a snapshot in this order.",
+        "required": [
+          "contactName",
+          "contactPhone",
+          "addressLine",
+          "province"
+        ],
+        "properties": {
+          "contactName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "contactPhone": {
+            "type": "string",
+            "pattern": "^0[35789][0-9]{8}$"
+          },
+          "addressLine": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "ward": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 100
+          },
+          "district": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 100
+          },
+          "province": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "location": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PickupLocation"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "CreateItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "materialId"
+        ],
+        "properties": {
+          "materialId": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "estimatedQty": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0.001,
+            "maximum": 999999999.999,
+            "multipleOf": 0.001
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500
+          }
+        }
+      },
+      "Order": {
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "status",
+          "collectorId",
+          "sourceAddressId",
+          "contactName",
+          "contactPhone",
+          "address",
+          "sellerNote",
+          "pickupStart",
+          "pickupEnd",
+          "createdAt",
+          "updatedAt",
+          "version",
+          "currency",
+          "items",
+          "estimatedTotal"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "CONFIRMED",
+              "ASSIGNED",
+              "EN_ROUTE",
+              "ARRIVED",
+              "AWAITING_SELLER_APPROVAL",
+              "AWAITING_PAYMENT",
+              "COMPLETED",
+              "CANCELLED",
+              "DISPUTED"
+            ]
+          },
+          "collectorId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "sourceAddressId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "Null for inline-address bookings"
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "contactPhone": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "sellerNote": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "pickupStart": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "pickupEnd": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "const": "VND"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            }
+          },
+          "estimatedTotal": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Sum of rounded item estimates; null if any quantity/price is unknown. Not the final purchase amount."
+          },
+          "pickupLocation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PickupLocation"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "OrderItem": {
+        "type": "object",
+        "required": [
+          "itemId",
+          "materialId",
+          "materialName",
+          "grade",
+          "unit",
+          "estimatedQty",
+          "estimatedPriceRuleId",
+          "estimatedUnitPrice",
+          "estimatedLineTotal",
+          "priceStatus",
+          "note"
+        ],
+        "properties": {
+          "itemId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "materialId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "materialName": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "estimatedQty": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "estimatedPriceRuleId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "estimatedUnitPrice": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Saved snapshot; later price changes do not overwrite it"
+          },
+          "estimatedLineTotal": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "ROUND(quantity * saved price, 0), VND"
+          },
+          "priceStatus": {
+            "type": "string",
+            "enum": [
+              "AVAILABLE",
+              "CONTACT_FOR_QUOTE"
+            ]
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "photoUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1000,
+            "description": "Private /api/evidence/... URL for API uploads; GET requires order permission."
+          }
+        }
+      },
+      "Problem": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string"
+          }
+        }
+      },
+      "PickupLocation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "lat",
+          "lng"
+        ],
+        "properties": {
+          "lat": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "multipleOf": 0.000001
+          },
+          "lng": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "multipleOf": 0.000001
+          }
+        }
+      }
+    }
+  }
+}

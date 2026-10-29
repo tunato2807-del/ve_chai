@@ -1,0 +1,1745 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "EcoThuGom Collection Workflow API",
+    "version": "1.0.0",
+    "description": "Contract: ../../README.md#doc-ecothugom-backend-docs-collection-workflow-md. One dealer; session cookie + CSRF. No payment integration."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8080"
+    }
+  ],
+  "paths": {
+    "/api/auth/csrf": {
+      "get": {
+        "operationId": "getCsrf",
+        "summary": "Get CSRF token; retain session cookie",
+        "description": "",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Csrf"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "operationId": "login",
+        "summary": "Sign in; rotate session ID and invalidate old CSRF",
+        "description": "",
+        "security": [
+          {
+            "csrfToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or unsupported fields",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated or invalid credentials",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing/invalid CSRF token or forbidden role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit; Retry-After contains seconds",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until another attempt may be made."
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Login"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "operationId": "currentUser",
+        "summary": "Get current user",
+        "description": "Required role: any authenticated. Authorization uses the current server-side account, not client-supplied identity.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated or invalid credentials",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "operationId": "logout",
+        "summary": "Invalidate session; fetch new CSRF before next login",
+        "description": "",
+        "security": [
+          {
+            "csrfToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Session invalidated"
+          },
+          "403": {
+            "description": "Missing/invalid CSRF token or forbidden role",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/collector/orders/{id}/start-trip": {
+      "post": {
+        "operationId": "collectorEN_ROUTE",
+        "summary": "COLLECTOR chuyển đơn sang EN_ROUTE",
+        "description": "Only assigned ACTIVE collector; exact state sequence and order version. Atomic audit and version increment.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/StorageFailure"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Confirm"
+              },
+              "example": {
+                "version": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/collector/orders/{id}/arrive": {
+      "post": {
+        "operationId": "collectorARRIVED",
+        "summary": "COLLECTOR chuyển đơn sang ARRIVED",
+        "description": "Only assigned ACTIVE collector; exact state sequence and order version. Atomic audit and version increment.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/StorageFailure"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Confirm"
+              },
+              "example": {
+                "version": 3
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/collector/orders/{id}/weighings": {
+      "get": {
+        "operationId": "listOrderWeighings",
+        "summary": "Nhân viên xem lịch sử cân",
+        "description": "",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeighResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/StorageFailure"
+          }
+        }
+      },
+      "post": {
+        "operationId": "recordOrderWeighings",
+        "summary": "Ghi cân thực tế hoặc phiếu điều chỉnh",
+        "description": "ARRIVED only. gross > tare >= 0, KG with at most 3 decimals. Correction must reference latest weighing and include reason. Append-only; atomic batch and orderVersion increment.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeighResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/StorageFailure"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WeighRequest"
+              },
+              "example": {
+                "version": 4,
+                "items": [
+                  {
+                    "itemId": 1,
+                    "grossWeight": 5.25,
+                    "tareWeight": 0.25
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/collector/orders/{id}/quotes": {
+      "post": {
+        "operationId": "sendActualQuote",
+        "summary": "Gửi báo giá theo cân và giá đã duyệt",
+        "description": "ARRIVED or replace expired current SENT. All items weighed and currently priced. Server snapshots latest weighing/current APPROVED price; rounds each line HALF_UP to VND, sums lines. Valid 24h. Order -> AWAITING_SELLER_APPROVAL; no client price overrides.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quote"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/StorageFailure"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Version"
+              },
+              "example": {
+                "version": 5
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "collectorListQuotes",
+        "summary": "Xem tối đa 100 báo giá mới nhất",
+        "description": "Descending versionNumber. CUSTOMER own order, COLLECTOR assigned order, ADMIN any. Empty array if no quotes. orderVersion is current order version; version is quote row version; versionNumber is quote sequence.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "maxItems": 100,
+                  "items": {
+                    "$ref": "#/components/schemas/Quote"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/StorageFailure"
+          }
+        }
+      }
+    },
+    "/api/customer/orders/{id}/quotes": {
+      "get": {
+        "operationId": "customerListQuotes",
+        "summary": "Xem tối đa 100 báo giá mới nhất",
+        "description": "Descending versionNumber. CUSTOMER own order, COLLECTOR assigned order, ADMIN any. Empty array if no quotes. orderVersion is current order version; version is quote row version; versionNumber is quote sequence.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "maxItems": 100,
+                  "items": {
+                    "$ref": "#/components/schemas/Quote"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/StorageFailure"
+          }
+        }
+      }
+    },
+    "/api/admin/orders/{id}/quotes": {
+      "get": {
+        "operationId": "adminListQuotes",
+        "summary": "Xem tối đa 100 báo giá mới nhất",
+        "description": "Descending versionNumber. CUSTOMER own order, COLLECTOR assigned order, ADMIN any. Empty array if no quotes. orderVersion is current order version; version is quote row version; versionNumber is quote sequence.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "maxItems": 100,
+                  "items": {
+                    "$ref": "#/components/schemas/Quote"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/StorageFailure"
+          }
+        }
+      }
+    },
+    "/api/customer/orders/{id}/quotes/{quoteId}/accept": {
+      "post": {
+        "operationId": "customerAcceptQuote",
+        "summary": "Khách đồng ý báo giá",
+        "description": "Only owner. Current SENT and order AWAITING_SELLER_APPROVAL; exact order and quote versions, now strictly before validUntil. Order -> AWAITING_PAYMENT. Atomic quote response, order version and audit. Repeated/stale/expired requests ->409. Payment not included.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          },
+          {
+            "$ref": "#/components/parameters/QuoteId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quote"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/StorageFailure"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Review"
+              },
+              "example": {
+                "version": 6,
+                "quoteVersion": 0,
+                "responseNote": "Đã kiểm tra kết quả cân"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/customer/orders/{id}/quotes/{quoteId}/reject": {
+      "post": {
+        "operationId": "customerRejectQuote",
+        "summary": "Khách từ chối báo giá",
+        "description": "Only owner. Current SENT and order AWAITING_SELLER_APPROVAL; exact order and quote versions, now strictly before validUntil. Order -> ARRIVED. Atomic quote response, order version and audit. Repeated/stale/expired requests ->409. Payment not included.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          },
+          {
+            "$ref": "#/components/parameters/QuoteId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Quote"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/StorageFailure"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Review"
+              },
+              "example": {
+                "version": 6,
+                "quoteVersion": 0,
+                "responseNote": "Đã kiểm tra kết quả cân"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "required": [
+          "id",
+          "fullName",
+          "phone",
+          "role",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "email"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "CUSTOMER",
+              "COLLECTOR",
+              "ADMIN"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "LOCKED"
+            ]
+          }
+        }
+      },
+      "Registration": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "fullName",
+          "phone",
+          "password"
+        ],
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "phone": {
+            "type": "string",
+            "pattern": "^0[35789][0-9]{8}$"
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 254,
+            "description": "Optional; blank becomes null, trimmed and normalized to lowercase."
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "minLength": 12,
+            "maxLength": 64,
+            "writeOnly": true,
+            "description": "Maximum 72 UTF-8 bytes."
+          }
+        }
+      },
+      "Login": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "identifier",
+          "password"
+        ],
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 254,
+            "description": "Phone or email; trimmed, email is case insensitive."
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "minLength": 1,
+            "maxLength": 64,
+            "writeOnly": true,
+            "description": "Maximum 72 UTF-8 bytes."
+          }
+        }
+      },
+      "Csrf": {
+        "type": "object",
+        "required": [
+          "headerName",
+          "token"
+        ],
+        "properties": {
+          "headerName": {
+            "type": "string",
+            "const": "X-CSRF-TOKEN"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "StatusChange": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "LOCKED"
+            ]
+          }
+        }
+      },
+      "OrderSummary": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "code": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "pickupStart": {
+            "type": "string",
+            "description": "UTC date-time without zone suffix, stored as SQL DATETIME2."
+          },
+          "pickupEnd": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        }
+      },
+      "Problem": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string"
+          }
+        }
+      },
+      "UserPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "page",
+          "size",
+          "totalElements",
+          "totalPages"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "size": {
+            "type": "integer"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer"
+          }
+        }
+      },
+      "OrderPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "page",
+          "size",
+          "totalElements",
+          "totalPages"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderSummary"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "size": {
+            "type": "integer"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer"
+          }
+        }
+      },
+      "Order": {
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "status",
+          "collectorId",
+          "sourceAddressId",
+          "contactName",
+          "contactPhone",
+          "address",
+          "sellerNote",
+          "pickupStart",
+          "pickupEnd",
+          "createdAt",
+          "updatedAt",
+          "version",
+          "currency",
+          "items",
+          "estimatedTotal"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "CONFIRMED",
+              "ASSIGNED",
+              "EN_ROUTE",
+              "ARRIVED",
+              "AWAITING_SELLER_APPROVAL",
+              "AWAITING_PAYMENT",
+              "COMPLETED",
+              "CANCELLED",
+              "DISPUTED"
+            ]
+          },
+          "collectorId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "sourceAddressId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "Null for inline-address bookings"
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "contactPhone": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "sellerNote": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "pickupStart": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "pickupEnd": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "const": "VND"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            }
+          },
+          "estimatedTotal": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Sum of rounded item estimates; null if any quantity/price is unknown. Not the final purchase amount."
+          },
+          "pickupLocation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PickupLocation"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "OrderItem": {
+        "type": "object",
+        "required": [
+          "itemId",
+          "materialId",
+          "materialName",
+          "grade",
+          "unit",
+          "estimatedQty",
+          "estimatedPriceRuleId",
+          "estimatedUnitPrice",
+          "estimatedLineTotal",
+          "priceStatus",
+          "note"
+        ],
+        "properties": {
+          "itemId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "materialId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "materialName": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "estimatedQty": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "estimatedPriceRuleId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "estimatedUnitPrice": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Saved snapshot; later price changes do not overwrite it"
+          },
+          "estimatedLineTotal": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "ROUND(quantity * saved price, 0), VND"
+          },
+          "priceStatus": {
+            "type": "string",
+            "enum": [
+              "AVAILABLE",
+              "CONTACT_FOR_QUOTE"
+            ]
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "photoUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1000,
+            "description": "Private /api/evidence/... URL for API uploads; GET requires order permission."
+          }
+        }
+      },
+      "Confirm": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "version"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483646
+          },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500
+          }
+        }
+      },
+      "Version": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483646
+          }
+        },
+        "required": [
+          "version"
+        ]
+      },
+      "Review": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483646
+          },
+          "quoteVersion": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483646
+          },
+          "responseNote": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "version",
+          "quoteVersion"
+        ]
+      },
+      "WeighItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "itemId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "grossWeight": {
+            "type": "number",
+            "minimum": 0.001,
+            "maximum": 999999999.999,
+            "multipleOf": 0.001
+          },
+          "tareWeight": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 999999999.999,
+            "multipleOf": 0.001
+          },
+          "correctionOf": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "correctionReason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "itemId",
+          "grossWeight",
+          "tareWeight"
+        ]
+      },
+      "WeighRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483646
+          },
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 50,
+            "items": {
+              "$ref": "#/components/schemas/WeighItem"
+            }
+          }
+        },
+        "required": [
+          "version",
+          "items"
+        ]
+      },
+      "WeighRecord": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "itemId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "grossWeight": {
+            "type": "number"
+          },
+          "tareWeight": {
+            "type": "number"
+          },
+          "netWeight": {
+            "type": "number"
+          },
+          "createdBy": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "correctionOf": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "correctionReason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500
+          },
+          "photoUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1000,
+            "description": "Private /api/evidence/... URL for API uploads; GET requires order permission."
+          }
+        },
+        "required": [
+          "id",
+          "itemId",
+          "grossWeight",
+          "tareWeight",
+          "netWeight",
+          "createdBy",
+          "createdAt",
+          "correctionOf",
+          "correctionReason"
+        ]
+      },
+      "WeighResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "orderId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "orderVersion": {
+            "type": "integer"
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WeighRecord"
+            }
+          }
+        },
+        "required": [
+          "orderId",
+          "orderVersion",
+          "records"
+        ]
+      },
+      "QuoteItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "itemId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "weighingId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "materialId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "priceRuleId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "materialName": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "KG"
+            ]
+          },
+          "actualQty": {
+            "type": "number"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "lineTotal": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "itemId",
+          "weighingId",
+          "materialId",
+          "priceRuleId",
+          "materialName",
+          "grade",
+          "unit",
+          "actualQty",
+          "unitPrice",
+          "lineTotal"
+        ]
+      },
+      "Quote": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "orderStatus": {
+            "type": "string"
+          },
+          "orderVersion": {
+            "type": "integer"
+          },
+          "versionNumber": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SENT",
+              "ACCEPTED",
+              "REJECTED",
+              "SUPERSEDED"
+            ]
+          },
+          "current": {
+            "type": "boolean"
+          },
+          "totalAmount": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "VND"
+            ]
+          },
+          "validUntil": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sentAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "respondedBy": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "respondedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "responseNote": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500
+          },
+          "version": {
+            "type": "integer"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuoteItem"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "orderId",
+          "orderStatus",
+          "orderVersion",
+          "versionNumber",
+          "status",
+          "current",
+          "totalAmount",
+          "currency",
+          "validUntil",
+          "createdBy",
+          "createdAt",
+          "sentAt",
+          "respondedBy",
+          "respondedAt",
+          "responseNote",
+          "version",
+          "items"
+        ]
+      },
+      "PickupLocation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "lat",
+          "lng"
+        ],
+        "properties": {
+          "lat": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "multipleOf": 0.000001
+          },
+          "lng": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "multipleOf": 0.000001
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "JSESSIONID"
+      },
+      "csrfToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-CSRF-TOKEN",
+        "description": "Use token from GET /api/auth/csrf in the same cookie session; refresh after login/logout."
+      }
+    },
+    "parameters": {
+      "OrderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 1
+        }
+      },
+      "QuoteId": {
+        "name": "quoteId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 1
+        }
+      }
+    },
+    "responses": {
+      "OrderDetail": {
+        "description": "Full order detail with updated status/version and saved estimates",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Order"
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Invalid ID, status filter, pagination, JSON, version, collector ID, reason, or unsupported field",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "Unauthenticated": {
+        "description": "Missing/expired/locked session; POST with invalid CSRF can return 403 first",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Wrong role or missing/invalid CSRF",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Order missing/outside collector scope, or selected user missing/not a COLLECTOR",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Stale version, invalid transition, existing assignment, locked collector or overlapping active pickup slot. Reload before deciding on a new command.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "StorageFailure": {
+        "description": "Storage failure; command transaction rolled back",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      }
+    }
+  }
+}

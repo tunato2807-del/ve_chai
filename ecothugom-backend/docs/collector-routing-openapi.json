@@ -1,0 +1,340 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "VCoi pickup location and collector routing",
+    "version": "1.0.0",
+    "description": "Coordinates are optional for existing bookings/addresses. Save pickupAddress.location, snapshot it into the order and return pickupLocation in scoped order detail. See ../../README.md#ban-do-thu-gom."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8080"
+    }
+  ],
+  "paths": {
+    "/api/collector/orders/{id}/route": {
+      "post": {
+        "operationId": "getCollectorRoute",
+        "summary": "Find a distance-prioritized automobile route to the assigned order snapshot",
+        "description": "COLLECTOR session + CSRF. Allowed in ASSIGNED, EN_ROUTE or ARRIVED; destination is loaded from the order, never supplied by the caller. Rechecks assignment after provider I/O. No order updates or storage of the origin. Public Valhalla routing prioritizes distance within map/engine constraints; estimated travel time is not live traffic.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectorRouteRequest"
+              },
+              "example": {
+                "origin": {
+                  "lat": 10.78,
+                  "lng": 106.69
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Route computed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectorRouteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid coordinates or unsupported fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouteProblem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sign in required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouteProblem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "COLLECTOR and valid CSRF required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouteProblem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Order not assigned to this collector",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouteProblem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Missing map point or order no longer eligible",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouteProblem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "No automobile route found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouteProblem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Routing request rate exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouteProblem"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Invalid provider data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouteProblem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Provider timeout or unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouteProblem"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PickupLocation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "lat",
+          "lng"
+        ],
+        "properties": {
+          "lat": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "multipleOf": 0.000001
+          },
+          "lng": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "multipleOf": 0.000001
+          }
+        }
+      },
+      "CollectorRouteRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "origin"
+        ],
+        "properties": {
+          "origin": {
+            "$ref": "#/components/schemas/PickupLocation"
+          }
+        }
+      },
+      "CollectorRouteResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "orderId",
+          "origin",
+          "destination",
+          "profile",
+          "strategy",
+          "distanceMeters",
+          "durationSeconds",
+          "geometry",
+          "steps",
+          "calculatedAt",
+          "attribution"
+        ],
+        "properties": {
+          "orderId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "origin": {
+            "$ref": "#/components/schemas/PickupLocation"
+          },
+          "destination": {
+            "$ref": "#/components/schemas/PickupLocation"
+          },
+          "profile": {
+            "const": "auto"
+          },
+          "strategy": {
+            "const": "shortest-distance"
+          },
+          "distanceMeters": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1000000000
+          },
+          "durationSeconds": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 31536000
+          },
+          "geometry": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "coordinates"
+            ],
+            "properties": {
+              "type": {
+                "const": "LineString"
+              },
+              "coordinates": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 20000,
+                "items": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "prefixItems": [
+                    {
+                      "type": "number",
+                      "minimum": -180,
+                      "maximum": 180
+                    },
+                    {
+                      "type": "number",
+                      "minimum": -90,
+                      "maximum": 90
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "steps": {
+            "type": "array",
+            "maxItems": 1000,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "instruction",
+                "distanceMeters"
+              ],
+              "properties": {
+                "instruction": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000
+                },
+                "distanceMeters": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1000000000
+                }
+              }
+            }
+          },
+          "calculatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "attribution": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        }
+      },
+      "RouteProblem": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "JSESSIONID"
+      },
+      "csrfToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-CSRF-TOKEN"
+      }
+    }
+  }
+}

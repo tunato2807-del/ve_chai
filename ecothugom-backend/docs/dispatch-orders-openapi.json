@@ -1,0 +1,764 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "EcoThuGom Collection Dispatch API",
+    "version": "1.0.0",
+    "description": "ADMIN confirmation and assignment; COLLECTOR reads only assigned order details. Use session authentication from auth-openapi.json. All POST requests need a fresh CSRF token after login. Order/OrderItem/Problem schemas are copied from the authoritative collection-orders-openapi.json; synchronize those schemas when the shared detail response changes."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8080"
+    }
+  ],
+  "paths": {
+    "/api/admin/orders": {
+      "get": {
+        "operationId": "listDispatchOrders",
+        "summary": "ADMIN lists orders, optionally filtered by status",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/OrderStatus"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sorted by createdAt DESC then id DESC; timestamps UTC",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/StorageFailure"
+          }
+        }
+      }
+    },
+    "/api/admin/orders/{id}": {
+      "get": {
+        "operationId": "getAdminOrder",
+        "summary": "ADMIN reads complete order detail",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/OrderDetail"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/StorageFailure"
+          }
+        }
+      }
+    },
+    "/api/admin/orders/{id}/confirm": {
+      "post": {
+        "operationId": "confirmCollectionOrder",
+        "summary": "ADMIN confirms a PENDING order",
+        "description": "PENDING -> CONFIRMED. Requires the current version and an unassigned order. Update and audit are atomic. Success increments version once. Repeated/stale commands return 409 without another audit entry.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Confirm"
+              },
+              "example": {
+                "version": 0,
+                "reason": "Đã xác minh lịch với khách"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/OrderDetail"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/StorageFailure"
+          }
+        }
+      }
+    },
+    "/api/admin/orders/{id}/assign": {
+      "post": {
+        "operationId": "assignCollectionOrder",
+        "summary": "ADMIN assigns an ACTIVE COLLECTOR to a CONFIRMED order",
+        "description": "CONFIRMED -> ASSIGNED, initially unassigned only. Requires current version. Locks the collector row during overlap check and update; assignment and audit are atomic. Active visits in ASSIGNED/EN_ROUTE/ARRIVED/AWAITING_SELLER_APPROVAL/AWAITING_PAYMENT cannot overlap. Slots use [start,end), allowing adjacent visits. Reassignment is not supported by this endpoint.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Assign"
+              },
+              "example": {
+                "version": 1,
+                "collectorId": 13,
+                "reason": "Phân công nhân viên phụ trách"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/OrderDetail"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/StorageFailure"
+          }
+        }
+      }
+    },
+    "/api/collector/orders/{id}": {
+      "get": {
+        "operationId": "getAssignedCollectorOrder",
+        "summary": "COLLECTOR reads only a currently assigned order",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/OrderDetail"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/StorageFailure"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "JSESSIONID"
+      },
+      "csrfToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-CSRF-TOKEN",
+        "description": "Use token from GET /api/auth/csrf in the same cookie session; refresh after login/logout."
+      }
+    },
+    "parameters": {
+      "OrderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 1
+        }
+      }
+    },
+    "responses": {
+      "OrderDetail": {
+        "description": "Full order detail with updated status/version and saved estimates",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Order"
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Invalid ID, status filter, pagination, JSON, version, collector ID, reason, or unsupported field",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "Unauthenticated": {
+        "description": "Missing/expired/locked session; POST with invalid CSRF can return 403 first",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Wrong role or missing/invalid CSRF",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Order missing/outside collector scope, or selected user missing/not a COLLECTOR",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Stale version, invalid transition, existing assignment, locked collector or overlapping active pickup slot. Reload before deciding on a new command.",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "StorageFailure": {
+        "description": "Storage failure; command transaction rolled back",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "OrderStatus": {
+        "type": "string",
+        "enum": [
+          "PENDING",
+          "CONFIRMED",
+          "ASSIGNED",
+          "EN_ROUTE",
+          "ARRIVED",
+          "AWAITING_SELLER_APPROVAL",
+          "AWAITING_PAYMENT",
+          "COMPLETED",
+          "CANCELLED",
+          "DISPUTED"
+        ]
+      },
+      "Confirm": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "version"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483646
+          },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500
+          }
+        }
+      },
+      "Assign": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "version",
+          "collectorId"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2147483646
+          },
+          "collectorId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 500
+          }
+        }
+      },
+      "Summary": {
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "status",
+          "collectorId",
+          "contactName",
+          "contactPhone",
+          "address",
+          "pickupStart",
+          "pickupEnd",
+          "createdAt",
+          "version"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "code": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "collectorId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "contactPhone": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "pickupStart": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "pickupEnd": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer"
+          }
+        }
+      },
+      "OrderPage": {
+        "type": "object",
+        "required": [
+          "data",
+          "page",
+          "size",
+          "totalElements",
+          "totalPages"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Summary"
+            }
+          },
+          "page": {
+            "type": "integer"
+          },
+          "size": {
+            "type": "integer"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer"
+          }
+        }
+      },
+      "Order": {
+        "type": "object",
+        "required": [
+          "id",
+          "code",
+          "status",
+          "collectorId",
+          "sourceAddressId",
+          "contactName",
+          "contactPhone",
+          "address",
+          "sellerNote",
+          "pickupStart",
+          "pickupEnd",
+          "createdAt",
+          "updatedAt",
+          "version",
+          "currency",
+          "items",
+          "estimatedTotal"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "code": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "CONFIRMED",
+              "ASSIGNED",
+              "EN_ROUTE",
+              "ARRIVED",
+              "AWAITING_SELLER_APPROVAL",
+              "AWAITING_PAYMENT",
+              "COMPLETED",
+              "CANCELLED",
+              "DISPUTED"
+            ]
+          },
+          "collectorId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "sourceAddressId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "Null for inline-address bookings"
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "contactPhone": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "sellerNote": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "pickupStart": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "pickupEnd": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "const": "VND"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            }
+          },
+          "estimatedTotal": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Sum of rounded item estimates; null if any quantity/price is unknown. Not the final purchase amount."
+          },
+          "pickupLocation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PickupLocation"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "OrderItem": {
+        "type": "object",
+        "required": [
+          "itemId",
+          "materialId",
+          "materialName",
+          "grade",
+          "unit",
+          "estimatedQty",
+          "estimatedPriceRuleId",
+          "estimatedUnitPrice",
+          "estimatedLineTotal",
+          "priceStatus",
+          "note"
+        ],
+        "properties": {
+          "itemId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "materialId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "materialName": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "estimatedQty": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "estimatedPriceRuleId": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "estimatedUnitPrice": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Saved snapshot; later price changes do not overwrite it"
+          },
+          "estimatedLineTotal": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "ROUND(quantity * saved price, 0), VND"
+          },
+          "priceStatus": {
+            "type": "string",
+            "enum": [
+              "AVAILABLE",
+              "CONTACT_FOR_QUOTE"
+            ]
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "photoUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 1000,
+            "description": "Private /api/evidence/... URL for API uploads; GET requires order permission."
+          }
+        }
+      },
+      "Problem": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string"
+          }
+        }
+      },
+      "PickupLocation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "lat",
+          "lng"
+        ],
+        "properties": {
+          "lat": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90,
+            "multipleOf": 0.000001
+          },
+          "lng": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180,
+            "multipleOf": 0.000001
+          }
+        }
+      }
+    }
+  }
+}

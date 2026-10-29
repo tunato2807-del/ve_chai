@@ -1,0 +1,39 @@
+@baseUrl = http://127.0.0.1:8080
+# Thay bằng id/version thực tế từ GET chi tiết và collectorId ACTIVE từ /api/admin/users.
+@orderId = 0
+@collectorId = 0
+@version = 0
+@confirmedVersion = 1
+
+### Đăng nhập ADMIN theo auth-api.http; giữ cookie JSESSIONID.
+GET {{baseUrl}}/api/admin/orders?status=PENDING&page=0&size=20
+
+### Chi tiết hiện tại
+GET {{baseUrl}}/api/admin/orders/{{orderId}}
+
+### CSRF mới sau đăng nhập
+# @name dispatchCsrf
+GET {{baseUrl}}/api/auth/csrf
+
+### Xác nhận đơn PENDING, đúng version
+POST {{baseUrl}}/api/admin/orders/{{orderId}}/confirm
+Content-Type: application/json
+X-CSRF-TOKEN: {{dispatchCsrf.response.body.$.token}}
+
+{"version":{{version}},"reason":"Đã xác minh lịch với khách"}
+
+### Chọn user có role COLLECTOR, status ACTIVE; không dùng id ví dụ nếu database khác.
+GET {{baseUrl}}/api/admin/users?page=0&size=100
+
+### Phân công sau CONFIRMED, dùng version mới từ phản hồi confirm
+POST {{baseUrl}}/api/admin/orders/{{orderId}}/assign
+Content-Type: application/json
+X-CSRF-TOKEN: {{dispatchCsrf.response.body.$.token}}
+
+{"version":{{confirmedVersion}},"collectorId":{{collectorId}},"reason":"Phân công nhân viên phụ trách"}
+
+### Đăng nhập nhân viên được giao trước khi chạy hai request tiếp theo.
+GET {{baseUrl}}/api/collector/orders?page=0&size=20
+
+### Chỉ nhân viên được giao được xem; nhân viên khác nhận 404.
+GET {{baseUrl}}/api/collector/orders/{{orderId}}

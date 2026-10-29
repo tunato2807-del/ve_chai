@@ -1,0 +1,113 @@
+.payment-start {
+  margin-top: 24px;
+  display: grid;
+  gap: 24px;
+  justify-items: start;
+}
+.payment-amount {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background: var(--surface-soft);
+  border-radius: 10px;
+  width: 100%;
+}
+.payment-amount span {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+.payment-amount strong {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.payment-review {
+  margin-top: 24px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+}
+.payment-review h3,
+.payment-records h3 {
+  font-size: 1.1rem;
+}
+.payment-review > p {
+  margin-block: 12px 20px;
+  max-width: 700px;
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+.payment-review form {
+  margin-top: 24px;
+  max-width: 600px;
+}
+.payment-review label {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.payment-review select {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: var(--surface);
+}
+.payment-review .text-button {
+  margin-top: 16px;
+}
+.payment-records {
+  margin-top: 24px;
+}
+.payment-records ul {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+}
+.payment-records li {
+  border-top: 1px solid var(--line);
+  padding-block: 20px;
+}
+.payment-records li header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+.payment-records li header strong {
+  font-size: 1.4rem;
+  font-variant-numeric: tabular-nums;
+}
+.payment-records li header span {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.payment-records dl {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1fr;
+  gap: 24px;
+  margin: 20px 0 0;
+}
+.payment-records dt {
+  color: var(--muted);
+  font-size: 0.74rem;
+}
+.payment-records dd {
+  margin: 8px 0 0;
+  font-size: 0.84rem;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 767px) {
+  .payment-amount {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .payment-records dl {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}

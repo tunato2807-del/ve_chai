@@ -1,0 +1,48 @@
+@baseUrl = http://127.0.0.1:8080
+@priceId = 1
+@expectedRevision = paste-64-character-draftRevision-from-GET
+@materialId = 1
+@csrfToken = paste-current-session-token
+
+### Đăng nhập ADMIN theo auth-api.http; giữ cookie cùng host. Lấy lại CSRF sau login.
+GET {{baseUrl}}/api/auth/csrf
+
+### Danh sách nháp
+GET {{baseUrl}}/api/admin/price-rules?materialId={{materialId}}&approvalStatus=DRAFT&page=0&size=20
+
+### Tạo nháp (chỉ giá giả định phục vụ đồ án)
+POST {{baseUrl}}/api/admin/price-rules
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{"materialId": {{materialId}}, "unitPrice": 3500, "validFrom": "2026-10-23T09:00:00+07:00", "validTo": null}
+
+### Lưu id response vào priceId; sửa nháp
+PUT {{baseUrl}}/api/admin/price-rules/{{priceId}}
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{"unitPrice": 4200, "validFrom": "2026-10-23T09:00:00+07:00", "validTo": null, "expectedRevision": "{{expectedRevision}}"}
+
+### Đọc trước khi duyệt
+GET {{baseUrl}}/api/admin/price-rules/{{priceId}}
+
+### Duyệt; không chạy cả approve lẫn reject cho cùng bản
+POST {{baseUrl}}/api/admin/price-rules/{{priceId}}/approve
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{"expectedRevision": "{{expectedRevision}}"}
+
+### Hoặc từ chối một DRAFT khác
+POST {{baseUrl}}/api/admin/price-rules/{{priceId}}/reject
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrfToken}}
+
+{"expectedRevision": "{{expectedRevision}}"}
+
+### Lịch sử phiên bản
+GET {{baseUrl}}/api/admin/materials/{{materialId}}/price-rules?page=0&size=20
+
+### Đối chiếu giá công khai
+GET {{baseUrl}}/api/prices/current?materialId={{materialId}}

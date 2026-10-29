@@ -1,0 +1,787 @@
+/* VCoi refinement: the existing native CSS system, shared by every workspace. */
+:root {
+  --canvas: #f5f6f0;
+  --surface-soft: #edf1e8;
+  --ink: #193d30;
+  --muted: #59695f;
+  --line: #dce3d8;
+  --accent: #3c652f;
+  --action: #d5eb83;
+  --radius-control: 9px;
+  --radius-panel: 16px;
+  --shadow-panel: 0 3px 16px rgb(25 61 48 / 3%);
+  --shadow-raised: 0 8px 26px rgb(25 61 48 / 8%);
+  --danger: #a43930;
+  --danger-soft: #fdf0ed;
+}
+:root[data-theme='dark'] {
+  --canvas: #12221c;
+  --surface: #1a2d25;
+  --surface-soft: #24392e;
+  --ink: #edf3e9;
+  --muted: #b6c5ba;
+  --line: #3c5144;
+  --accent: #d5eb83;
+  --danger: #ffb6aa;
+  --danger-soft: #3c2925;
+  --shadow-panel: 0 3px 16px rgb(0 0 0 / 6%);
+  --shadow-raised: 0 8px 26px rgb(0 0 0 / 15%);
+}
+body {
+  line-height: 1.6;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+.public-shell,
+.service-shell,
+.admin-shell {
+  overflow-wrap: break-word;
+}
+:is(.public-shell, .service-shell, .admin-shell) .button {
+  border-radius: var(--radius-control);
+  letter-spacing: -0.015em;
+}
+:is(.public-shell, .service-shell, .admin-shell) .icon-button {
+  border-radius: var(--radius-control);
+}
+:is(.public-shell, .service-shell, .admin-shell) .button:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+.button-primary:not(:disabled):hover {
+  background: #c9e474;
+}
+.skip-link {
+  top: -100px;
+  transform: none;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  box-shadow: var(--shadow-raised);
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+/* Public pages: image-led, with a quieter navigation and stronger reading order. */
+.public-shell .header-inner {
+  height: 84px;
+}
+.public-shell .brand {
+  letter-spacing: -0.06em;
+}
+.public-shell .navigation {
+  gap: 26px;
+}
+.public-shell .navigation > a {
+  position: relative;
+}
+.public-shell .hero {
+  gap: 64px;
+  padding-block: 54px 64px;
+}
+.public-shell .hero h1 {
+  font-size: clamp(3.5rem, 6vw, 5.7rem);
+  letter-spacing: -0.065em;
+}
+.public-shell .hero-kicker {
+  font-size: 0.66rem;
+  letter-spacing: 0.11em;
+}
+.public-shell .hero-visual {
+  height: 520px;
+  margin: 0;
+}
+.public-shell .hero-image {
+  border-radius: 18px 100px 18px 18px;
+}
+.hero-assurance {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  color: var(--muted);
+  font-size: 0.73rem;
+  margin-top: 28px;
+}
+.hero-caption {
+  position: absolute;
+  inset: auto 18px 18px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 12px 24px;
+  padding: 22px 24px;
+  color: #fff;
+  background: #193d30;
+  border-radius: 12px;
+}
+.hero-caption > span {
+  grid-column: 1 / -1;
+  color: #d5eb83;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+}
+.hero-caption p {
+  font-size: 1.3rem;
+  line-height: 1.5;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+.public-shell .quick-links {
+  padding-block: 20px;
+}
+.public-shell .quick-links a {
+  min-height: 88px;
+}
+.public-shell .quick-links a > svg:first-child {
+  padding: 10px;
+  box-sizing: content-box;
+  background: var(--surface-soft);
+  border-radius: 12px;
+}
+.public-shell .materials-intro img {
+  border-radius: 18px;
+}
+.public-shell .material-symbol {
+  border-radius: 12px;
+}
+.public-shell .material-row {
+  padding-block: 30px;
+}
+.public-shell .process-section {
+  background: #1c4133;
+  color: #f1f5e9;
+}
+.public-shell
+  .process-section
+  :is(.section-description, .section-eyebrow, .process-note, .process-steps p) {
+  color: #c0cec0;
+}
+.public-shell .process-steps li {
+  border-color: #4c6757;
+}
+.public-shell .process-steps .step-number {
+  color: #d5eb83;
+}
+.public-shell .faq-item {
+  padding-block: 8px;
+}
+.public-shell .closing-section {
+  padding-block: 50px 65px;
+}
+.public-shell .site-footer {
+  background: var(--surface);
+}
+.public-shell .footer-top {
+  gap: 50px;
+  padding-block: 50px;
+}
+.public-shell .prices-heading {
+  padding-bottom: 32px;
+}
+.public-shell .price-panel {
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+}
+.public-shell .price-toolbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.public-shell .price-table thead {
+  background: var(--surface-soft);
+}
+.public-shell .price-table th,
+.public-shell .price-table td {
+  padding-block: 20px;
+}
+
+/* Customer, collector and admin share the same form and surface language. */
+:is(.service-shell, .admin-shell)
+  :is(.workspace-panel, .booking-section, .price-panel, .booking-help, .booking-review) {
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+}
+:is(.service-shell, .admin-shell) .workspace-heading h1 {
+  letter-spacing: -0.045em;
+  font-weight: 600;
+}
+:is(.service-shell, .admin-shell) .role-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.7rem;
+  letter-spacing: 0.055em;
+}
+:is(.service-shell, .admin-shell) .role-label::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+:is(.service-shell, .admin-shell) .panel-heading {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+:is(.service-shell, .admin-shell) .panel-heading h2 {
+  font-weight: 600;
+}
+:is(.service-shell, .admin-shell) .order-list a {
+  padding-block: 26px;
+}
+:is(.service-shell, .admin-shell) .order-code {
+  letter-spacing: -0.02em;
+}
+:is(.service-shell, .admin-shell) .order-status {
+  border-radius: 6px;
+  font-size: 0.73rem;
+}
+:is(.service-shell, .admin-shell) .list-pagination {
+  padding-block: 18px;
+  background: var(--surface);
+}
+:is(.service-shell, .admin-shell) .back-link {
+  min-height: 44px;
+}
+:is(.service-shell, .admin-shell)
+  :is(.form-field input, .form-field select, .form-field textarea, .filter-field select) {
+  border-radius: var(--radius-control);
+  background: var(--surface);
+}
+:is(.service-shell, .admin-shell) .form-field label {
+  font-weight: 500;
+}
+:is(.service-shell, .admin-shell) .form-field :is(input, select, textarea):focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+:is(.service-shell, .admin-shell) .form-field :is(input, select, textarea)[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+:is(.service-shell, .admin-shell) .field-error {
+  color: var(--danger);
+}
+:is(.service-shell, .admin-shell) .form-error {
+  background: var(--danger-soft);
+  border-left-color: var(--danger);
+  border-radius: var(--radius-control);
+}
+:is(.service-shell, .admin-shell) .form-notice {
+  border-radius: var(--radius-control);
+}
+:is(.service-shell, .admin-shell) .text-button {
+  text-decoration-color: var(--line);
+}
+:is(.service-shell, .admin-shell) .text-button:hover {
+  text-decoration-color: currentColor;
+}
+:is(.service-shell, .admin-shell)
+  :is(.account-section, .customer-section, .detail-contact, .detail-materials) {
+  padding: 28px;
+}
+:is(.service-shell, .admin-shell) :is(.customer-confirm, .booking-item, .customer-records > li) {
+  border-radius: 10px;
+}
+.service-shell .service-topbar {
+  border-top: 3px solid var(--ink);
+}
+.service-shell .service-navigation {
+  gap: 10px;
+  padding-block: 10px;
+}
+.service-shell .service-navigation a {
+  gap: 8px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: var(--radius-control);
+}
+.service-shell .service-navigation a:hover {
+  background: var(--surface-soft);
+}
+.service-shell .service-navigation a[aria-current='page'] {
+  background: var(--surface-soft);
+  color: var(--ink);
+  box-shadow: inset 0 -2px var(--accent);
+}
+.service-shell .service-navigation > span {
+  background: transparent;
+  font-size: 0.72rem;
+}
+.service-shell .workspace-page {
+  padding-block: 36px 72px;
+}
+.service-shell .workspace-heading {
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 28px;
+}
+.service-shell .workspace-heading .muted {
+  margin-top: 12px;
+}
+.service-shell .booking-heading {
+  align-items: center;
+}
+.service-shell .booking-help {
+  border: 1px solid var(--line);
+}
+.service-shell .booking-section {
+  padding: 30px;
+}
+.service-shell .auth-layout {
+  gap: 72px;
+  padding-block: 48px 64px;
+  align-items: center;
+}
+.service-shell .auth-story {
+  border-radius: 20px;
+  position: relative;
+  background: #1c4133;
+  color: #fff;
+}
+.service-shell .auth-story img {
+  max-height: 310px;
+  object-position: center 55%;
+}
+.service-shell .auth-story > div {
+  padding: 30px 34px;
+}
+.service-shell .auth-story h2 {
+  font-size: clamp(1.8rem, 2.6vw, 2.3rem);
+}
+.service-shell .auth-story p {
+  color: #c0cec0;
+}
+.service-shell .auth-story .auth-story-kicker {
+  color: #d5eb83;
+  font-size: 0.6rem;
+  letter-spacing: 0.09em;
+}
+.service-shell .auth-story .text-link {
+  color: #d5eb83;
+  font-size: 0.8rem;
+}
+.service-shell .auth-form-area {
+  padding: 32px;
+  max-width: 500px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: var(--shadow-panel);
+}
+.service-shell .auth-form-area h1 {
+  font-size: clamp(1.8rem, 2.7vw, 2.4rem);
+}
+.service-shell .auth-form-kicker {
+  font-size: 0.65rem;
+  letter-spacing: 0.07em;
+}
+
+/* Administration: retain the PCMaker-inspired shell; soften the dense details. */
+.admin-shell {
+  --canvas: #f3f5ef;
+  --surface: #fff;
+  --surface-soft: #edf1e8;
+  --ink: #243d30;
+  --muted: #5e6b60;
+  --line: #dce3d7;
+  --accent: #3c652f;
+  --action: #d5eb83;
+  --action-ink: #243c25;
+  --focus: #3c652f;
+  --admin-selected: #e8efda;
+}
+.admin-shell .admin-topbar {
+  min-height: 78px;
+  padding-block: 14px;
+}
+.admin-shell .admin-brand {
+  color: var(--ink);
+}
+.admin-shell .admin-brand > svg {
+  color: var(--accent);
+}
+.admin-shell .admin-sidebar {
+  top: 78px;
+  min-height: calc(100dvh - 78px);
+  padding-inline: 16px;
+}
+.admin-shell .admin-sidebar nav {
+  gap: 5px;
+}
+.admin-shell .admin-sidebar nav a {
+  border-radius: var(--radius-control);
+  min-height: 46px;
+  font-size: 12px;
+}
+.admin-shell .admin-sidebar nav a.is-active {
+  border-color: transparent;
+  box-shadow: inset 3px 0 var(--accent);
+  font-weight: 600;
+}
+.admin-shell .admin-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--admin-selected);
+}
+.admin-shell .admin-page-heading {
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 24px;
+}
+.admin-shell .admin-page-heading h1 {
+  font-size: clamp(1.5rem, 2.4vw, 1.95rem);
+}
+.admin-shell .admin-breadcrumb {
+  font-size: 11px;
+  letter-spacing: 0.015em;
+}
+.admin-shell .admin-stats {
+  gap: 18px;
+}
+.admin-shell .admin-stats > a {
+  border-radius: 13px;
+  box-shadow: var(--shadow-panel);
+  padding: 22px;
+}
+.admin-shell .admin-stats > a > span {
+  font-size: 12px;
+}
+.admin-shell .admin-stats strong {
+  letter-spacing: -0.045em;
+}
+.admin-shell .button,
+.admin-shell .nav-logout {
+  min-height: 42px;
+  font-size: 12px;
+  border-radius: var(--radius-control);
+}
+.admin-shell .form-field :is(input, select, textarea) {
+  font-size: 13px;
+}
+.admin-shell .form-field label {
+  font-size: 12px;
+}
+.admin-shell .catalog-table :is(th, td) {
+  padding-block: 19px;
+}
+.admin-shell :is(.catalog-table, .admin-orders-table, .price-table) thead {
+  background: var(--surface-soft);
+}
+.admin-shell :is(.catalog-state, .account-state, .change-state, .dispute-state) {
+  border-radius: 6px;
+}
+.admin-shell :is(.catalog-confirm, .price-review, .dispute-confirm, .change-confirm) {
+  border-left: 3px solid var(--accent);
+}
+.admin-shell .report-metric output {
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+.admin-shell .dossier-tabs {
+  gap: 6px;
+}
+.admin-shell .dossier-tabs button {
+  border-radius: 8px 8px 0 0;
+}
+:root[data-theme='dark'] .admin-shell {
+  --canvas: #171f1a;
+  --surface: #202a23;
+  --surface-soft: #29352c;
+  --ink: #edf3e9;
+  --muted: #b4c3b6;
+  --line: #3c4d3f;
+  --accent: #d5eb83;
+  --focus: #d5eb83;
+  --admin-selected: #34412c;
+}
+
+/* Small screens and minor states receive the same treatment as primary pages. */
+:is(.public-shell, .service-shell, .admin-shell, main) .data-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  min-height: 260px;
+  padding: 36px 24px;
+  text-align: center;
+}
+:is(.public-shell, .service-shell, .admin-shell, main) .data-state h2 {
+  font-size: 1.15rem;
+  letter-spacing: -0.03em;
+  line-height: 1.5;
+}
+:is(.public-shell, .service-shell, .admin-shell, main) .data-state p {
+  max-width: 52ch;
+  margin: 12px 0 0;
+  font-size: 0.83rem;
+  color: var(--muted);
+}
+.state-symbol {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-soft);
+  color: var(--accent);
+}
+.state-skeleton {
+  display: grid;
+  gap: 8px;
+  width: min(200px, 80%);
+  margin-top: 24px;
+}
+.state-skeleton span {
+  display: block;
+  height: 7px;
+  border-radius: 5px;
+  background: var(--surface-soft);
+}
+.state-skeleton span:nth-child(2) {
+  width: 80%;
+  justify-self: center;
+}
+.state-skeleton span:nth-child(3) {
+  width: 55%;
+  justify-self: center;
+}
+.data-state .button {
+  margin-top: 22px;
+}
+:is(.service-shell, .admin-shell) .order-route {
+  padding: 28px;
+}
+:is(.service-shell, .admin-shell) .order-route h2 {
+  font-size: 1.3rem;
+  line-height: 1.4;
+  letter-spacing: -0.035em;
+}
+:is(.service-shell, .admin-shell) .order-route .location-heading {
+  align-items: center;
+  margin-bottom: 22px;
+}
+:is(.service-shell, .admin-shell) .route-summary {
+  gap: 0;
+  padding: 18px 0;
+  margin: 0;
+}
+:is(.service-shell, .admin-shell) .route-summary > div {
+  min-width: 145px;
+  padding-right: 24px;
+}
+:is(.service-shell, .admin-shell) .route-summary > div + div {
+  border-left: 1px solid var(--line);
+  padding-left: 24px;
+}
+:is(.service-shell, .admin-shell) .order-route details {
+  padding-block: 12px;
+  margin-bottom: 12px;
+  border-block: 1px solid var(--line);
+  font-size: 0.85rem;
+}
+:is(.service-shell, .admin-shell) .order-route > .field-hint {
+  margin-top: 10px;
+}
+.leave-dialog {
+  box-shadow: var(--shadow-raised);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :is(.public-shell, .service-shell, .admin-shell)
+    :is(.button, .icon-button, .admin-stats > a, .quick-links a) {
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      background-color 180ms ease,
+      border-color 180ms ease;
+  }
+  :is(.public-shell, .service-shell, .admin-shell) .button:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-raised);
+  }
+  :is(.public-shell, .service-shell, .admin-shell) .button:not(:disabled):active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+  .public-shell .quick-links a:hover > svg:last-child {
+    transform: translate(2px, -2px);
+  }
+  .public-shell .quick-links a > svg {
+    transition: transform 180ms ease;
+  }
+  .admin-shell .admin-stats > a:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-raised);
+  }
+  .state-symbol.is-loading > svg {
+    animation: vcoi-spin 1.2s linear infinite;
+  }
+  .state-skeleton {
+    animation: vcoi-breathe 1.5s ease-in-out infinite alternate;
+  }
+  .leave-dialog[open] {
+    animation: vcoi-dialog 160ms ease-out;
+  }
+  @keyframes vcoi-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes vcoi-breathe {
+    to {
+      opacity: 0.4;
+    }
+  }
+  @keyframes vcoi-dialog {
+    from {
+      opacity: 0.8;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  :is(.public-shell, .service-shell, .admin-shell)
+    :is(.button, .icon-button, .state-symbol > svg, .state-skeleton) {
+    animation: none;
+    transition: none;
+  }
+}
+@media (max-width: 1100px) {
+  .public-shell .hero {
+    gap: 32px;
+  }
+  .public-shell .navigation {
+    gap: 18px;
+  }
+  .service-shell .auth-layout {
+    gap: 36px;
+  }
+}
+@media (max-width: 767px) {
+  .public-shell .header-inner {
+    height: 72px;
+  }
+  .public-shell .hero {
+    gap: 32px;
+    padding-block: 32px 40px;
+  }
+  .public-shell .hero h1 {
+    font-size: clamp(3.5rem, 11vw, 5.5rem);
+  }
+  .public-shell .hero-visual {
+    height: 380px;
+  }
+  .public-shell .hero-image {
+    border-radius: 16px 70px 16px 16px;
+  }
+  .hero-caption {
+    padding: 16px 18px;
+    inset: auto 12px 12px;
+    gap: 8px;
+  }
+  .hero-caption p {
+    font-size: 1.15rem;
+  }
+  .public-shell .quick-links {
+    padding-block: 10px;
+  }
+  .public-shell .quick-links a {
+    min-height: 92px;
+  }
+  .public-shell .quick-links a > svg:first-child {
+    padding: 8px;
+  }
+  .service-shell .auth-layout {
+    padding-block: 28px 48px;
+  }
+  .service-shell .auth-form-area {
+    padding: 26px 22px;
+  }
+  .service-shell .workspace-page {
+    padding-block: 26px 48px;
+  }
+  .service-shell .workspace-heading {
+    padding-bottom: 22px;
+    gap: 20px;
+  }
+  .service-shell .service-navigation {
+    gap: 6px;
+  }
+  .service-shell .service-navigation a {
+    padding: 9px 10px;
+    font-size: 11px;
+    min-height: 44px;
+  }
+  :is(.service-shell, .admin-shell)
+    :is(.account-section, .customer-section, .detail-contact, .detail-materials, .order-route) {
+    padding: 22px;
+  }
+  .service-shell .booking-section {
+    padding: 22px;
+  }
+  .admin-shell .admin-sidebar {
+    min-height: 0;
+    padding: 12px;
+  }
+  .admin-shell .admin-sidebar nav a {
+    padding: 9px;
+    min-height: 44px;
+    font-size: 11px;
+  }
+  .admin-shell .admin-page-heading {
+    padding-bottom: 20px;
+  }
+  .admin-shell .admin-stats {
+    gap: 10px;
+  }
+  .admin-shell .admin-stats > a {
+    padding: 16px;
+  }
+  .admin-shell .admin-stats > a > span {
+    font-size: 11px;
+  }
+  .admin-shell .button,
+  .admin-shell .nav-logout {
+    min-height: 44px;
+  }
+  .admin-shell .admin-topbar {
+    min-height: 0;
+  }
+  :is(.service-shell, .admin-shell) .order-route .location-heading {
+    align-items: stretch;
+  }
+  :is(.service-shell, .admin-shell) .order-route h2 {
+    font-size: 1.15rem;
+  }
+  :is(.service-shell, .admin-shell) .route-summary > div {
+    min-width: 0;
+    padding-right: 18px;
+  }
+  :is(.service-shell, .admin-shell) .route-summary > div + div {
+    padding-left: 18px;
+  }
+}
+@media print {
+  [data-page-motion] {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .workspace-panel {
+    box-shadow: none !important;
+  }
+}

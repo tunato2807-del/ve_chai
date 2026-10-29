@@ -1,0 +1,61 @@
+@baseUrl = http://127.0.0.1:8080
+@categoryId = 1
+@materialId = 1
+@csrf = PASTE_CURRENT_ADMIN_SESSION_TOKEN
+
+### Sign in as ADMIN (auth-api.http), then get a NEW token after login.
+GET {{baseUrl}}/api/auth/csrf
+
+### All categories, including hidden
+GET {{baseUrl}}/api/admin/material-categories?page=0&size=20
+
+### Create category (replace name to avoid duplicate)
+POST {{baseUrl}}/api/admin/material-categories
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrf}}
+
+{"name":"Danh mục thử","description":"Nhóm dùng trong đồ án"}
+
+### Replace info; update categoryId from the create response
+PUT {{baseUrl}}/api/admin/material-categories/{{categoryId}}
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrf}}
+
+{"name":"Danh mục đã sửa","description":null}
+
+### Hide category; true restores without changing individual material flags
+PATCH {{baseUrl}}/api/admin/material-categories/{{categoryId}}/status
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrf}}
+
+{"isActive":false}
+
+### All materials including hidden category/stopped buying
+GET {{baseUrl}}/api/admin/materials?categoryId={{categoryId}}&page=0&size=20
+
+### Create material (accepted defaults to true; hidden category means available=false)
+POST {{baseUrl}}/api/admin/materials
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrf}}
+
+{"categoryId":{{categoryId}},"name":"Vật liệu thử","grade":"Loại A","unit":"KG","description":null,"excludedItems":"Không nhận tạp chất","imageUrl":null}
+
+### Replace info; materialId from create response. Omitted optional fields are cleared.
+PUT {{baseUrl}}/api/admin/materials/{{materialId}}
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrf}}
+
+{"categoryId":{{categoryId}},"name":"Vật liệu đã sửa","grade":"Loại A","unit":"KG"}
+
+### Stop buying; true resumes (only publicly available if category active too)
+PATCH {{baseUrl}}/api/admin/materials/{{materialId}}/status
+Content-Type: application/json
+X-CSRF-TOKEN: {{csrf}}
+
+{"accepted":false}
+
+### Admin detail includes accepted, categoryActive and available
+GET {{baseUrl}}/api/admin/materials/{{materialId}}
+
+### Public price page excludes inactive/stopped material
+GET {{baseUrl}}/api/prices/current?materialId={{materialId}}
